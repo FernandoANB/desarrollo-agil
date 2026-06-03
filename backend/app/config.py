@@ -2,7 +2,7 @@ import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+psycopg://user:password@host:port/dbname"
+    DATABASE_URL: str
     APP_NAME: str = "ReservasSaaS"
     DEBUG: bool = True
     PORT: int = 8000
