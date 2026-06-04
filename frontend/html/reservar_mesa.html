@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julio Cesar Restaurant</title>
+    <link rel="stylesheet" href="../css/reservar_mesa.css">
+</head>
+<body>
+    <nav>
+        <h2>Julio Cesar Restaurant</h2>
+    </nav>
+    <main class="container">
+        <h1 class="titulo">Reserva tu Mesa</h1>
+        <p class="subtitulo">Reserva una mesa para poder vivir una experiencia culinaria 
+            en Julio Cesar Restaurant.</p>
+        <form action="detalles_reserva.html">
+        <div class="bloque bloque-invitados">
+            <div class="titulo-invitados">
+                <h5>NÚMERO DE INVITADOS</h5>
+            </div>
+            <div class="numero-invitados">
+                <div class="opcion-invitado">
+                    <input type="radio" name="invitados" id="g1" value="1">
+                    <label for="g1">1</label>
+                </div>
+                <div class="opcion-invitado">
+                    <input type="radio" name="invitados" id="g2" value="2">
+                    <label for="g2">2</label>
+                </div>
+                <div class="opcion-invitado">
+                    <input type="radio" name="invitados" id="g3" value="3">
+                    <label for="g3">3</label>
+                </div>
+                <div class="opcion-invitado">
+                    <input type="radio" name="invitados" id="g4" value="4">
+                    <label for="g4">4</label>
+                </div>
+                <div class="opcion-invitado">
+                    <input type="radio" name="invitados" id="g5" value="5">
+                    <label for="g5">5</label>
+                </div>
+            </div>
+        </div>
+        <div class="bloque bloque-calendario">
+            <div class="titulo-calendario">
+                <h5>SELECCIONA LA FECHA</h5>
+            </div>
+            <div class="seleccion-calendario">
+                <input type="date">
+            </div>
+        </div>
+        <div class="bloque bloque-horario">
+            <div class="titulo-tiempo">
+                <h5>SELECCIONA UNA HORA</h5>
+            </div>
+            <div class="bloques-tiempo">
+                <input type="radio" id="t1" name="hora" value="18:00">
+                <label for="t1">18:00</label>
+
+                <input type="radio" id="t2" name="hora" value="19:00">
+                <label for="t2">19:00</label>
+
+                <input type="radio" id="t3" name="hora" value="20:00">
+                <label for="t3">20:00</label>
+
+                <input type="radio" id="t4" name="hora" value="21:00">
+                <label for="t4">21:00</label>
+
+                <input type="radio" id="t5" name="hora" value="22:00">
+                <label for="t5">22:00</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">SIGUIENTE</button>
+        </form>
+    </main>
+</body>
+</html>
