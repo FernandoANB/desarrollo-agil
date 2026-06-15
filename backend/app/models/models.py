@@ -66,6 +66,7 @@ class Reserva(Base):
     id_servicio = Column(Integer, ForeignKey("servicios.id_servicio"), nullable=False)
     nombre_cliente = Column(String(100), nullable=False)
     email_cliente = Column(String(100), nullable=False)
+    rut = Column(String(20))
     telefono = Column(String(20))
     fecha = Column(Date, nullable=False)
     hora = Column(Time, nullable=False)

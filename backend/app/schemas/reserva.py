@@ -13,6 +13,7 @@ class ReservaBase(BaseModel):
     id_servicio: int
     nombre_cliente: str
     email_cliente: EmailStr
+    rut: Optional[str] = None
     telefono: Optional[str] = None
     fecha: date
     hora: time
