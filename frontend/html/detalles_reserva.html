@@ -14,35 +14,35 @@
         <h1>Completa Tu Reserva</h1>
         <p>Por favor, completa tus datos de contacto para 
             terminar de reservar tu mesa.</p>
-        <form>
-            <div class="nombre">
+        <form id="form-paso-2"> <div class="nombre">
                 <label>Nombre Completo</label>
-                <input type="text" placeholder="Julio Cesar">
+                <input type="text" id="nombre" placeholder="Julio Cesar" required>
             </div>
             <hr>
             <div class="rut">
                 <label>RUT</label>
-                <input type="text" placeholder="13355879-k">
+                <input type="text" id="rut" placeholder="13355879-k" required>
             </div>
             <hr>
             <div class="email">
                 <label>Email</label>
-                <input type="email" placeholder="j.cesar@gmail.com">
+                <input type="email" id="email" placeholder="j.cesar@gmail.com" required>
             </div>
             <hr>
             <div class="telefono">
                 <label>Número de Teléfono</label>
-                <input type="text" placeholder="939027863">
+                <input type="text" id="telefono" placeholder="939027863">
             </div>
             <hr>
             <div class="notas">
                 <label>Peticiones Especiales / Nota</label>
-                <textarea placeholder="Alergias, aniversarios, sillas de bebe, etc."></textarea>
+                <textarea id="notas" placeholder="Alergias, aniversarios..."></textarea>
             </div>
             <div class="boton">
-                <button type="submit" class="btn-submit">CONFIRMAR RESERVA</button>
+                <button type="submit" id="btn-submit" class="btn-submit">CONFIRMAR RESERVA</button>
             </div>
         </form>
     </div>
+    <script src="../js/paso2.js"></script>
 </body>
 </html>

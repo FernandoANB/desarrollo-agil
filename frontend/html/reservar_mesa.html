@@ -14,7 +14,7 @@
         <h1 class="titulo">Reserva tu Mesa</h1>
         <p class="subtitulo">Reserva una mesa para poder vivir una experiencia culinaria 
             en Julio Cesar Restaurant.</p>
-        <form action="detalles_reserva.html">
+        <form id="form-paso-1"> <div class="seleccion-calendario">
         <div class="bloque bloque-invitados">
             <div class="titulo-invitados">
                 <h5>NÚMERO DE INVITADOS</h5>
@@ -47,7 +47,7 @@
                 <h5>SELECCIONA LA FECHA</h5>
             </div>
             <div class="seleccion-calendario">
-                <input type="date">
+                <input type="date" id="fecha-reserva" required> </div>
             </div>
         </div>
         <div class="bloque bloque-horario">
@@ -75,5 +75,6 @@
         <button type="submit" class="btn-submit">SIGUIENTE</button>
         </form>
     </main>
+    <script src="../js/paso1.js"></script>
 </body>
 </html>
