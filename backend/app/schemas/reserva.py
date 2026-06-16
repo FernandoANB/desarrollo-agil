@@ -17,7 +17,7 @@ class ReservaBase(BaseModel):
     telefono: Optional[str] = None
     fecha: date
     hora: time
-    cantidad_personas: Optional[int] = Field(default=1, ge=1)
+    cantidad_personas: Optional[int] = Field(default=1, ge=0)
     notas: Optional[str] = None
     estado: Optional[EstadoReservaEnum] = EstadoReservaEnum.CONFIRMADA
 
@@ -31,7 +31,7 @@ class ReservaUpdate(BaseModel):
     telefono: Optional[str] = None
     fecha: Optional[date] = None
     hora: Optional[time] = None
-    cantidad_personas: Optional[int] = Field(default=None, ge=1)
+    cantidad_personas: Optional[int] = Field(default=None, ge=0)
     notas: Optional[str] = None
     estado: Optional[EstadoReservaEnum] = None
 

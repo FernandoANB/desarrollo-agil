@@ -4,40 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Detalles de Reserva</title>
-    <link rel="stylesheet" href="../css/detalles_reserva.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <nav>
-        <h2>Julio Cesar Restaurant</h2>
-    </nav>
-    <main class="container">
-        <h1>Completa Tu Reserva</h1>
-        <p>Por favor, ingresa tus datos de contacto para asegurar tu mesa.</p>
+    <div class="app-container">
+        <header>
+            <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
+            <h2>RESERVE & REFINE</h2>
+            <i class="fa-regular fa-circle-user"></i>
+        </header>
         
-        <form id="form-paso-2"> 
-            <div class="input-group">
-                <label>NOMBRE COMPLETO</label>
-                <input type="text" id="nombre" placeholder="Ej. Julio Cesar" required>
-            </div>
+        <main>
+            <h1>Complete Your Details</h1>
+            <p class="subtitle">Please provide your contact details to secure your table.</p>
             
-            <div class="input-group">
-                <label>CORREO ELECTRÓNICO</label>
-                <input type="email" id="email" placeholder="correo@ejemplo.com" required>
-            </div>
-            
-            <div class="input-group">
-                <label>NÚMERO DE TELÉFONO</label>
-                <input type="tel" id="telefono" placeholder="+56 9 0000 0000" required>
-            </div>
-            
-            <div class="input-group">
-                <label>PETICIONES ESPECIALES (Opcional)</label>
-                <textarea id="notas" rows="3" placeholder="Alergias, silla de bebé, aniversarios..."></textarea>
-            </div>
-            
-            <button type="submit" id="btn-submit" class="btn-submit">CONFIRMAR RESERVA</button>
-        </form>
-    </main>
+            <form id="form-paso-2"> 
+                <div class="card">
+                    <div class="card-header"><span>CONTACT INFO</span></div>
+                    <input type="text" id="nombre" placeholder="Full Name (ej. Julio Cesar)" required>
+                    <input type="email" id="email" placeholder="Email Address" required style="margin-top: 15px;">
+                    <input type="tel" id="telefono" placeholder="Phone Number" required style="margin-top: 15px;">
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><span>SPECIAL REQUESTS / NOTES</span></div>
+                    <textarea id="notas" rows="3" placeholder="Allergies, anniversaries, baby chairs..."></textarea>
+                </div>
+                
+                <div class="bottom-action">
+                    <button type="submit" id="btn-submit" class="btn-main">
+                        CONFIRM RESERVATION <i class="fa-solid fa-check"></i>
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
     <script src="../js/paso2.js"></script>
 </body>
 </html>

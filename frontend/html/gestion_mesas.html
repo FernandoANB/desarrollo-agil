@@ -4,34 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ocupación en Vivo - Admin</title>
-    <link rel="stylesheet" href="../css/reservar_mesa.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .dashboard-header { background-color: #111; color: #f8f8f8; padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
-        .dashboard-header h1 { font-size: 3rem; margin: 10px 0;}
-        .table-card { background-color: #fff; border: 1px solid #eaeaea; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
-        .table-header h2 { margin: 0; font-size: 1.2rem; }
-        .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px;}
-        .status-occupied { background-color: #111; color: #fff;}
-        .btn-action { width: 100%; padding: 12px; margin-top: 15px; font-weight: bold; background-color: #111; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s;}
-        .btn-release { background-color: #fff; color: #111; border: 2px solid #111;}
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; background-color: #111; color: #fff;}
+        .btn-release { padding: 10px; width: 100%; border: 2px solid #111; background: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px;}
     </style>
 </head>
 <body>
-    <nav><h2>PANEL DE ADMINISTRACIÓN</h2></nav>
-    <main class="container">
-        <div class="dashboard-header">
-            <p>OCUPACIÓN EN VIVO</p>
-            <h1>65% Lleno</h1>
-            <p>Reservas Activas de Hoy</p>
-        </div>
-
-        <h3 style="margin-bottom: 15px;">Vista de Salón</h3>
+    <div class="app-container">
+        <header>
+            <i class="fa-solid fa-bars"></i>
+            <h2>ADMIN DASHBOARD</h2>
+            <i class="fa-solid fa-gear"></i>
+        </header>
         
-        <div id="reservas-lista">
-            <p style="text-align: center; color: #666;">Cargando reservas desde el servidor...</p>
-        </div>
-    </main>
+        <main>
+            <div class="card" style="background-color: #111; border-color: #111; margin-top: 20px; text-align: center;">
+                <div class="card-header" style="color: #aaa; margin-bottom: 10px;"><span>LIVE OCCUPANCY</span></div>
+                <h1 style="color: #fff; margin: 0; font-size: 3rem;">65% Full</h1>
+                <p style="color: #aaa; margin: 5px 0 0;">Reservas Activas de Hoy</p>
+            </div>
+
+            <h3 style="padding: 0 24px; font-family: 'Playfair Display', serif;">Floor Overview</h3>
+            
+            <div id="reservas-lista">
+                <p style="text-align: center; color: #666;">Cargando reservas...</p>
+            </div>
+        </main>
+    </div>
 
     <script>
         async function cargarReservas() {
@@ -49,22 +50,21 @@
                 reservas.forEach(reserva => {
                     if(reserva.estado === 'CONFIRMADA' || reserva.estado === 'PENDIENTE') {
                         const card = document.createElement('div');
-                        card.className = 'table-card';
+                        card.className = 'card';
                         card.innerHTML = `
-                            <div class="table-header">
-                                <h2>Reserva #${reserva.id_reserva}</h2>
-                                <span class="status-badge status-occupied">OCUPADA</span>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h2 style="margin:0; font-size:1.2rem; font-family: 'Inter', sans-serif;">Reserva #${reserva.id_reserva}</h2>
+                                <span class="status-badge">OCUPADA</span>
                             </div>
-                            <p><strong>Cliente:</strong> ${reserva.nombre_cliente} (${reserva.cantidad_personas} pers.)</p>
-                            <p><strong>Hora:</strong> ${reserva.hora}</p>
-                            <p><small><strong>Notas:</strong> ${reserva.notas || 'Ninguna'}</small></p>
-                            <button class="btn-action btn-release" onclick="liberarMesa(${reserva.id_reserva})">Liberar Mesa</button>
+                            <p style="margin:5px 0; color:#666;"><strong>Cliente:</strong> ${reserva.nombre_cliente} (${reserva.cantidad_personas} pers.)</p>
+                            <p style="margin:5px 0; color:#666;"><strong>Hora:</strong> ${reserva.hora.substring(0, 5)}</p>
+                            <button class="btn-release" onclick="liberarMesa(${reserva.id_reserva})">Liberar Mesa</button>
                         `;
                         contenedor.appendChild(card);
                     }
                 });
             } catch (error) {
-                contenedor.innerHTML = '<p style="text-align:center; color:red;">Error de conexión con el servidor.</p>';
+                document.getElementById('reservas-lista').innerHTML = '<p style="text-align:center; color:red;">Error de conexión con el servidor.</p>';
             }
         }
 
@@ -76,12 +76,8 @@
                     body: JSON.stringify({ estado: 'FINALIZADA' })
                 });
 
-                if (response.ok) {
-                    cargarReservas(); // Recargar la lista sin recargar la página
-                }
-            } catch (error) {
-                alert('Error al intentar liberar la mesa.');
-            }
+                if (response.ok) { cargarReservas(); }
+            } catch (error) { alert('Error al intentar liberar la mesa.'); }
         }
 
         cargarReservas();

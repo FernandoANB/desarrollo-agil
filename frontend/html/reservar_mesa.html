@@ -1,80 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julio Cesar Restaurant</title>
-    <link rel="stylesheet" href="../css/reservar_mesa.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reserve a Table</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <nav>
-        <h2>Julio Cesar Restaurant</h2>
-    </nav>
-    <main class="container">
-        <h1 class="titulo">Reserva tu Mesa</h1>
-        <p class="subtitulo">Reserva una mesa para poder vivir una experiencia culinaria 
-            en Julio Cesar Restaurant.</p>
-        <form id="form-paso-1"> <div class="seleccion-calendario">
-        <div class="bloque bloque-invitados">
-            <div class="titulo-invitados">
-                <h5>NÚMERO DE INVITADOS</h5>
-            </div>
-            <div class="numero-invitados">
-                <div class="opcion-invitado">
-                    <input type="radio" name="invitados" id="g1" value="1">
-                    <label for="g1">1</label>
-                </div>
-                <div class="opcion-invitado">
-                    <input type="radio" name="invitados" id="g2" value="2">
-                    <label for="g2">2</label>
-                </div>
-                <div class="opcion-invitado">
-                    <input type="radio" name="invitados" id="g3" value="3">
-                    <label for="g3">3</label>
-                </div>
-                <div class="opcion-invitado">
-                    <input type="radio" name="invitados" id="g4" value="4">
-                    <label for="g4">4</label>
-                </div>
-                <div class="opcion-invitado">
-                    <input type="radio" name="invitados" id="g5" value="5">
-                    <label for="g5">5</label>
-                </div>
-            </div>
-        </div>
-        <div class="bloque bloque-calendario">
-            <div class="titulo-calendario">
-                <h5>SELECCIONA LA FECHA</h5>
-            </div>
-            <div class="seleccion-calendario">
-                <input type="date" id="fecha-reserva" required> </div>
-            </div>
-        </div>
-        <div class="bloque bloque-horario">
-            <div class="titulo-tiempo">
-                <h5>SELECCIONA UNA HORA</h5>
-            </div>
-            <div class="bloques-tiempo">
-                <input type="radio" id="t1" name="hora" value="18:00">
-                <label for="t1">18:00</label>
+    <div class="app-container">
+        <header>
+            <i class="fa-solid fa-bars"></i>
+            <h2>RESERVE & REFINE</h2>
+            <i class="fa-regular fa-circle-user"></i>
+        </header>
+        
+        <main>
+            <h1>Reserve a Table</h1>
+            <p class="subtitle">Experience culinary excellence crafted with precision.</p>
 
-                <input type="radio" id="t2" name="hora" value="19:00">
-                <label for="t2">19:00</label>
+            <form id="form-paso-1">
+                <div class="card">
+                    <div class="card-header"><span>NUMBER OF GUESTS</span></div>
+                    <div class="guest-selector" style="flex-wrap: wrap;">
+                        <input type="radio" name="invitados" id="g0" value="0">
+                        <label for="g0">0</label>
+                        
+                        <input type="radio" name="invitados" id="g1" value="1">
+                        <label for="g1">1</label>
+                        
+                        <input type="radio" name="invitados" id="g2" value="2" checked>
+                        <label for="g2">2</label>
+                        
+                        <input type="radio" name="invitados" id="g3" value="3">
+                        <label for="g3">3</label>
+                        
+                        <input type="radio" name="invitados" id="g4" value="4">
+                        <label for="g4">4</label>
+                        
+                        <input type="radio" name="invitados" id="g5" value="5">
+                        <label for="g5">5</label>
+                    </div>
+                </div>
 
-                <input type="radio" id="t3" name="hora" value="20:00">
-                <label for="t3">20:00</label>
+                <div class="card">
+                    <div class="card-header"><span>SELECT DATE</span></div>
+                    <div class="calendar-header">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <h3>Octubre 2024</h3>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="day-name">DOM</div><div class="day-name">LUN</div><div class="day-name">MAR</div>
+                        <div class="day-name">MIE</div><div class="day-name">JUE</div><div class="day-name">VIE</div><div class="day-name">SAB</div>
+                        
+                        <div class="day-empty"></div><div class="day-empty"></div>
+                        
+                        <input type="radio" name="fecha" id="d1" value="2024-10-01"><label for="d1">1</label>
+                        <input type="radio" name="fecha" id="d2" value="2024-10-02"><label for="d2">2</label>
+                        <input type="radio" name="fecha" id="d3" value="2024-10-03"><label for="d3">3</label>
+                        <input type="radio" name="fecha" id="d4" value="2024-10-04"><label for="d4">4</label>
+                        <input type="radio" name="fecha" id="d5" value="2024-10-05"><label for="d5">5</label>
+                        <input type="radio" name="fecha" id="d6" value="2024-10-06"><label for="d6">6</label>
+                        <input type="radio" name="fecha" id="d7" value="2024-10-07"><label for="d7">7</label>
+                        <input type="radio" name="fecha" id="d8" value="2024-10-08"><label for="d8">8</label>
+                        <input type="radio" name="fecha" id="d9" value="2024-10-09" checked><label for="d9">9</label>
+                        <input type="radio" name="fecha" id="d10" value="2024-10-10"><label for="d10">10</label>
+                        <input type="radio" name="fecha" id="d11" value="2024-10-11"><label for="d11">11</label>
+                        <input type="radio" name="fecha" id="d12" value="2024-10-12"><label for="d12">12</label>
+                        </div>
+                </div>
 
-                <input type="radio" id="t4" name="hora" value="21:00">
-                <label for="t4">21:00</label>
+                <div class="card">
+                    <div class="card-header"><span>SELECT TIME</span></div>
+                    <div class="time-selector">
+                        <input type="radio" id="t1" name="hora" value="18:00"><label for="t1">18:00</label>
+                        <input type="radio" id="t2" name="hora" value="18:30"><label for="t2">18:30</label>
+                        <input type="radio" id="t3" name="hora" value="19:00" checked><label for="t3">19:00</label>
+                        <input type="radio" id="t4" name="hora" value="19:30"><label for="t4">19:30</label>
+                    </div>
+                </div>
 
-                <input type="radio" id="t5" name="hora" value="22:00">
-                <label for="t5">22:00</label>
-            </div>
-        </div>
-
-        <button type="submit" class="btn-submit">SIGUIENTE</button>
-        </form>
-    </main>
+                <div class="bottom-action">
+                    <button type="submit" class="btn-main">
+                        CONTINUE TO REFINEMENT <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
     <script src="../js/paso1.js"></script>
 </body>
 </html>

@@ -4,55 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Reserva Confirmada</title>
-    <link rel="stylesheet" href="../css/confirmacion.css">
+    <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <nav>
-        <h2>Julio Cesar Restaurant</h2>
-    </nav>
-    <main class="container">
-        <div class="titulo">
-            <h1>¡Reserva Confirmada!</h1>
-            <p>Te esperamos para una experiencia inolvidable.</p>
-        </div>
+    <div class="app-container">
+        <header>
+            <i class="fa-solid fa-bars"></i>
+            <h2>RESERVE & REFINE</h2>
+            <i class="fa-regular fa-circle-user"></i>
+        </header>
         
-        <div class="resumen-card">
-            <div class="fila-resumen">
-                <i class="fa-solid fa-calendar"></i>
-                <div>
-                    <h3>FECHA Y HORA</h3>
-                    <h2 id="conf-fecha-hora">Cargando...</h2>
-                </div>
+        <main>
+            <div style="text-align: center; margin: 40px 0 20px;">
+                <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--accent-gold);"></i>
+                <h1>Reserva Confirmada</h1>
+                <p class="subtitle">Te esperamos para una experiencia inolvidable.</p>
             </div>
             
-            <div class="fila-resumen">
-                <i class="fa-solid fa-user-group"></i>
-                <div>
-                    <h3>INVITADOS</h3>
-                    <h2 id="conf-invitados">Cargando...</h2>
+            <div class="card" style="background-color: var(--accent-gold-light); border-color: var(--accent-gold);">
+                <div class="card-header" style="color: #8C6A3B;"><span>RESERVATION DETAILS</span></div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 0.9rem;">Date & Time</span>
+                        <strong id="conf-fecha-hora">...</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 0.9rem;">Guests</span>
+                        <strong id="conf-invitados">...</strong>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="email-nota">
-            <i class="fa-solid fa-envelope"></i>
-            <p>Hemos enviado una copia de tu reserva a tu email.</p>
-        </div>
-        
-        <a href="reservar_mesa.html" class="btn-volver">HACER OTRA RESERVA</a>
-    </main>
+            <div class="bottom-action">
+                <a href="reservar_mesa.html" class="btn-main" style="text-align: center; display: block; text-decoration: none;">
+                    MAKE ANOTHER RESERVATION
+                </a>
+            </div>
+        </main>
+    </div>
 
     <script>
-        // Leer datos del localStorage para mostrarlos dinámicamente
         document.addEventListener("DOMContentLoaded", () => {
             const invitados = localStorage.getItem('reserva_invitados') || '1';
             const fecha = localStorage.getItem('reserva_fecha') || '';
             const hora = localStorage.getItem('reserva_hora') || '';
-
-            document.getElementById('conf-invitados').innerText = `${invitados} Persona(s)`;
-            
-            // Formatear la hora quitando los segundos (ej. de 19:00:00 a 19:00)
+            document.getElementById('conf-invitados').innerText = invitados == 0 ? "Ir solo (0)" : `${invitados} Persona(s)`;
             const horaFormateada = hora.substring(0, 5); 
             document.getElementById('conf-fecha-hora').innerText = `${fecha} a las ${horaFormateada}`;
         });

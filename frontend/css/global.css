@@ -191,3 +191,57 @@ input:focus, textarea:focus {
     font-size: 0.9rem;
     color: #555;
 }
+
+
+/* 📅 Calendario Interactivo (Grid) */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.calendar-header h3 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+.calendar-header i { cursor: pointer; color: var(--text-muted); }
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    text-align: center;
+}
+
+.day-name {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.calendar-grid input { display: none; }
+
+.calendar-grid label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin: 0 auto;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.calendar-grid label:hover { background-color: var(--border-color); }
+
+.calendar-grid input:checked + label {
+    background-color: var(--accent-gold);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(185, 141, 88, 0.4);
+}
+
+.day-empty { width: 38px; height: 38px; } /* Para rellenar días en blanco del mes */
