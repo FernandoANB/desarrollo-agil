@@ -46,32 +46,15 @@
                 <div class="card">
                     <div class="card-header"><span>SELECT DATE</span></div>
                     <div class="calendar-header">
-                        <i class="fa-solid fa-chevron-left"></i>
-                        <h3>Octubre 2024</h3>
-                        <i class="fa-solid fa-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-left" id="prev-month"></i>
+                        <h3 id="month-year">Cargando...</h3>
+                        <i class="fa-solid fa-chevron-right" id="next-month"></i>
                     </div>
                     
-                    <div class="calendar-grid">
-                        <div class="day-name">DOM</div><div class="day-name">LUN</div><div class="day-name">MAR</div>
-                        <div class="day-name">MIE</div><div class="day-name">JUE</div><div class="day-name">VIE</div><div class="day-name">SAB</div>
-                        
-                        <div class="day-empty"></div><div class="day-empty"></div>
-                        
-                        <input type="radio" name="fecha" id="d1" value="2024-10-01"><label for="d1">1</label>
-                        <input type="radio" name="fecha" id="d2" value="2024-10-02"><label for="d2">2</label>
-                        <input type="radio" name="fecha" id="d3" value="2024-10-03"><label for="d3">3</label>
-                        <input type="radio" name="fecha" id="d4" value="2024-10-04"><label for="d4">4</label>
-                        <input type="radio" name="fecha" id="d5" value="2024-10-05"><label for="d5">5</label>
-                        <input type="radio" name="fecha" id="d6" value="2024-10-06"><label for="d6">6</label>
-                        <input type="radio" name="fecha" id="d7" value="2024-10-07"><label for="d7">7</label>
-                        <input type="radio" name="fecha" id="d8" value="2024-10-08"><label for="d8">8</label>
-                        <input type="radio" name="fecha" id="d9" value="2024-10-09" checked><label for="d9">9</label>
-                        <input type="radio" name="fecha" id="d10" value="2024-10-10"><label for="d10">10</label>
-                        <input type="radio" name="fecha" id="d11" value="2024-10-11"><label for="d11">11</label>
-                        <input type="radio" name="fecha" id="d12" value="2024-10-12"><label for="d12">12</label>
+                    <div class="calendar-grid" id="calendar-grid">
                         </div>
                 </div>
-
+                
                 <div class="card">
                     <div class="card-header"><span>SELECT TIME</span></div>
                     <div class="time-selector">
