@@ -1,48 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julio Cesar Restaurant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Detalles de Reserva</title>
     <link rel="stylesheet" href="../css/detalles_reserva.css">
 </head>
 <body>
     <nav>
         <h2>Julio Cesar Restaurant</h2>
     </nav>
-    <div class="container">
+    <main class="container">
         <h1>Completa Tu Reserva</h1>
-        <p>Por favor, completa tus datos de contacto para 
-            terminar de reservar tu mesa.</p>
-        <form id="form-paso-2"> <div class="nombre">
-                <label>Nombre Completo</label>
-                <input type="text" id="nombre" placeholder="Julio Cesar" required>
+        <p>Por favor, ingresa tus datos de contacto para asegurar tu mesa.</p>
+        
+        <form id="form-paso-2"> 
+            <div class="input-group">
+                <label>NOMBRE COMPLETO</label>
+                <input type="text" id="nombre" placeholder="Ej. Julio Cesar" required>
             </div>
-            <hr>
-            <div class="rut">
-                <label>RUT</label>
-                <input type="text" id="rut" placeholder="13355879-k" required>
+            
+            <div class="input-group">
+                <label>CORREO ELECTRÓNICO</label>
+                <input type="email" id="email" placeholder="correo@ejemplo.com" required>
             </div>
-            <hr>
-            <div class="email">
-                <label>Email</label>
-                <input type="email" id="email" placeholder="j.cesar@gmail.com" required>
+            
+            <div class="input-group">
+                <label>NÚMERO DE TELÉFONO</label>
+                <input type="tel" id="telefono" placeholder="+56 9 0000 0000" required>
             </div>
-            <hr>
-            <div class="telefono">
-                <label>Número de Teléfono</label>
-                <input type="text" id="telefono" placeholder="939027863">
+            
+            <div class="input-group">
+                <label>PETICIONES ESPECIALES (Opcional)</label>
+                <textarea id="notas" rows="3" placeholder="Alergias, silla de bebé, aniversarios..."></textarea>
             </div>
-            <hr>
-            <div class="notas">
-                <label>Peticiones Especiales / Nota</label>
-                <textarea id="notas" placeholder="Alergias, aniversarios..."></textarea>
-            </div>
-            <div class="boton">
-                <button type="submit" id="btn-submit" class="btn-submit">CONFIRMAR RESERVA</button>
-            </div>
+            
+            <button type="submit" id="btn-submit" class="btn-submit">CONFIRMAR RESERVA</button>
         </form>
-    </div>
+    </main>
     <script src="../js/paso2.js"></script>
 </body>
 </html>

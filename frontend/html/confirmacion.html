@@ -1,43 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julio Cesar Restaurant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reserva Confirmada</title>
     <link rel="stylesheet" href="../css/confirmacion.css">
-    <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <nav>
         <h2>Julio Cesar Restaurant</h2>
     </nav>
-    <div class="container">
+    <main class="container">
         <div class="titulo">
-            <h1>Tu reserva ha sido confirmada, Julio Cesar.</h1>
+            <h1>¡Reserva Confirmada!</h1>
+            <p>Te esperamos para una experiencia inolvidable.</p>
         </div>
-        <div class="fecha">
-            <h3>FECHA Y HORA</h3>
-            <div class="fecha-content">
+        
+        <div class="resumen-card">
+            <div class="fila-resumen">
                 <i class="fa-solid fa-calendar"></i>
-                <h2>Sábado, 25 Junio - 19:00 PM</h2>
+                <div>
+                    <h3>FECHA Y HORA</h3>
+                    <h2 id="conf-fecha-hora">Cargando...</h2>
+                </div>
+            </div>
+            
+            <div class="fila-resumen">
+                <i class="fa-solid fa-user-group"></i>
+                <div>
+                    <h3>INVITADOS</h3>
+                    <h2 id="conf-invitados">Cargando...</h2>
+                </div>
             </div>
         </div>
-        <div class="invitados">
-            <h3>INVITADOS</h3>
-            <div class="invitados-content">
-                <i class="fa-solid fa-person"></i>
-                <h2>4 Invitados</h2>
-            </div>
+
+        <div class="email-nota">
+            <i class="fa-solid fa-envelope"></i>
+            <p>Hemos enviado una copia de tu reserva a tu email.</p>
         </div>
-        <div class="email">
-            <hr>
-            <div class="email-content">
-                <i class="fa-solid fa-envelope"></i>
-                <p>Hemos enviado una copia de tu reserva a tu email.</p>
-            </div>
-        </div>
-    </div>
-    <a href="reservar_mesa.html" class="btn-volver">ATRÁS</a>
+        
+        <a href="reservar_mesa.html" class="btn-volver">HACER OTRA RESERVA</a>
+    </main>
+
+    <script>
+        // Leer datos del localStorage para mostrarlos dinámicamente
+        document.addEventListener("DOMContentLoaded", () => {
+            const invitados = localStorage.getItem('reserva_invitados') || '1';
+            const fecha = localStorage.getItem('reserva_fecha') || '';
+            const hora = localStorage.getItem('reserva_hora') || '';
+
+            document.getElementById('conf-invitados').innerText = `${invitados} Persona(s)`;
+            
+            // Formatear la hora quitando los segundos (ej. de 19:00:00 a 19:00)
+            const horaFormateada = hora.substring(0, 5); 
+            document.getElementById('conf-fecha-hora').innerText = `${fecha} a las ${horaFormateada}`;
+        });
+    </script>
 </body>
 </html>
