@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mis Reservas</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .badge-activa { background-color: var(--accent-gold-light); color: var(--accent-gold); }
+        .badge-cancelada { background-color: #fee2e2; color: #991b1b; }
+        .badge-pasada { background-color: #e5e7eb; color: #4b5563; }
+        .btn-cancelar { background: none; border: none; color: #dc2626; font-weight: 600; font-size: 0.85rem; cursor: pointer; padding: 10px 0; text-decoration: underline;}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <i class="fa-solid fa-arrow-left" onclick="window.location.href='index.html'"></i>
+            <h2>MIS RESERVAS</h2>
+            <i class="fa-regular fa-circle-user"></i>
+        </header>
+
+        <main>
+            <div id="login-section" style="padding: 20px;">
+                <h1 style="font-size: 2rem;">Bienvenido de vuelta</h1>
+                <p class="subtitle">Ingresa tu correo para ver tu historial de reservas.</p>
+                
+                <div class="card" style="margin: 0;">
+                    <input type="email" id="email-login" placeholder="correo@ejemplo.com" required>
+                    <button onclick="buscarReservas()" class="btn-main" style="margin-top: 20px; justify-content: center;">
+                        BUSCAR MIS RESERVAS
+                    </button>
+                </div>
+            </div>
+
+            <div id="historial-section" style="display: none; padding-top: 10px;">
+                <h3 style="padding: 0 24px;">Reservas Próximas</h3>
+                <div id="reservas-futuras"></div>
+
+                <h3 style="padding: 0 24px; margin-top: 30px;">Historial Pasado</h3>
+                <div id="reservas-pasadas"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function buscarReservas() {
+            const email = document.getElementById('email-login').value;
+            if (!email) return alert("Por favor ingresa un correo.");
+
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('historial-section').style.display = 'block';
+
+            try {
+                // Obtenemos todas las reservas de FastAPI
+                const response = await fetch('http://localhost:8000/reservas/');
+                const todasLasReservas = await response.json();
+                
+                // Filtramos SOLO las que coinciden con el email del usuario (Filtro Frontend)
+                const misReservas = todasLasReservas.filter(r => r.email_cliente === email);
+                
+                const contenedorFuturas = document.getElementById('reservas-futuras');
+                const contenedorPasadas = document.getElementById('reservas-pasadas');
+                contenedorFuturas.innerHTML = ''; contenedorPasadas.innerHTML = '';
+
+                if (misReservas.length === 0) {
+                    contenedorFuturas.innerHTML = '<p style="text-align:center; padding:20px;">No tienes reservas asociadas a este correo.</p>';
+                    return;
+                }
+
+                misReservas.forEach(reserva => {
+                    const esActiva = reserva.estado === 'PENDIENTE' || reserva.estado === 'CONFIRMADA';
+                    const badgeClass = esActiva ? 'badge-activa' : (reserva.estado === 'CANCELADA' ? 'badge-cancelada' : 'badge-pasada');
+                    
+                    const card = `
+                        <div class="card" style="margin-bottom: 15px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                <strong>${reserva.fecha} a las ${reserva.hora.substring(0,5)}</strong>
+                                <span class="badge ${badgeClass}">${reserva.estado}</span>
+                            </div>
+                            <p style="margin:5px 0; color:#666; font-size:0.9rem;"><i class="fa-solid fa-user-group"></i> ${reserva.cantidad_personas} Invitados</p>
+                            
+                            ${esActiva ? `<button class="btn-cancelar" onclick="cancelarReserva(${reserva.id_reserva})">Cancelar Reserva</button>` : ''}
+                        </div>
+                    `;
+
+                    if (esActiva) contenedorFuturas.innerHTML += card;
+                    else contenedorPasadas.innerHTML += card;
+                });
+
+                if(contenedorFuturas.innerHTML === '') contenedorFuturas.innerHTML = '<p style="padding:0 24px; color:#999;">No tienes reservas próximas.</p>';
+                if(contenedorPasadas.innerHTML === '') contenedorPasadas.innerHTML = '<p style="padding:0 24px; color:#999;">No hay historial pasado.</p>';
+
+            } catch (error) {
+                alert("Error al conectar con la base de datos.");
+            }
+        }
+
+        // LÓGICA US-08: Cancelación Autónoma
+        async function cancelarReserva(id) {
+            if(confirm("¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.")) {
+                try {
+                    const response = await fetch(`http://localhost:8000/reservas/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ estado: 'CANCELADA' }) // Actualizamos el estado
+                    });
+
+                    if (response.ok) {
+                        alert("Tu reserva ha sido cancelada exitosamente.");
+                        buscarReservas(); // Recargamos la interfaz para moverla al historial pasado
+                    }
+                } catch (error) {
+                    alert("Ocurrió un error al intentar cancelar.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
