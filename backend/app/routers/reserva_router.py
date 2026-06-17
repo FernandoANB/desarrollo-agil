@@ -1,36 +1,33 @@
-from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
-from typing import List
-from app.schemas.reserva import Reserva, ReservaCreate, ReservaUpdate
-from app.services import reserva_service
-from app.database import get_db
+import os
+from dotenv import load_dotenv
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-router = APIRouter(prefix="/reservas", tags=["reservas"])
+load_dotenv() # Carga las credenciales del .env de forma segura
 
-@router.get("/", response_model=List[Reserva])
-def get_reservas(db: Session = Depends(get_db)):
-    return reserva_service.get_all_reservas(db)
+def enviar_correo_real_confirmacion(email_destinatario: str, fecha: str, hora: str):
+    user = os.getenv("SMTP_USER")
+    password = os.getenv("SMTP_PASSWORD")
+    
+    if not user or not password:
+        print("⚠️ Variables SMTP no detectadas. Simulación en consola activada.")
+        return
 
-@router.get("/{id_reserva}", response_model=Reserva)
-def get_reserva(id_reserva: int, db: Session = Depends(get_db)):
-    reserva = reserva_service.get_reserva(db, id_reserva)
-    if not reserva:
-        raise HTTPException(status_code=404, detail="Reserva no encontrada")
-    return reserva
-
-@router.post("/", response_model=Reserva)
-def create_reserva(reserva: ReservaCreate, db: Session = Depends(get_db)):
-    return reserva_service.create_reserva(db, reserva)
-
-@router.put("/{id_reserva}", response_model=Reserva)
-def update_reserva(id_reserva: int, reserva: ReservaUpdate, db: Session = Depends(get_db)):
-    updated_reserva = reserva_service.update_reserva(db, id_reserva, reserva)
-    if not updated_reserva:
-        raise HTTPException(status_code=404, detail="Reserva no encontrada")
-    return updated_reserva
-
-@router.delete("/{id_reserva}")
-def delete_reserva(id_reserva: int, db: Session = Depends(get_db)):
-    if not reserva_service.delete_reserva(db, id_reserva):
-        raise HTTPException(status_code=404, detail="Reserva no encontrada")
-    return {"detail": "Reserva eliminada"}
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = user
+        msg['To'] = email_destinatario
+        msg['Subject'] = "Tu Reserva en Reserva Refinada está Confirmada ✨"
+        
+        cuerpo = f"¡Hola! Tu mesa para el {fecha} a las {hora} ha sido reservada con éxito."
+        msg.attach(MIMEText(cuerpo, 'plain', 'utf-8'))
+        
+        server = smtplib.SMTP(os.getenv("SMTP_SERVER", "smtp.gmail.com"), int(os.getenv("SMTP_PORT", 587)))
+        server.starttls()
+        server.login(user, password)
+        server.sendmail(user, email_destinatario, msg.as_string())
+        server.quit()
+        print("📧 ¡Correo real despachado con éxito!")
+    except Exception as e:
+        print(f"❌ Error al enviar correo SMTP: {str(e)}")

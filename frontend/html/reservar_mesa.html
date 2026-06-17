@@ -3,60 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Reserve a Table</title>
+    <title>Reserva tu Mesa - Reserva Refinada</title>
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <div class="app-container">
         <header>
-            <i class="fa-solid fa-bars"></i>
-            <h2>RESERVE & REFINE</h2>
-            <i class="fa-regular fa-circle-user"></i>
+            <i class="fa-solid fa-arrow-left" onclick="window.location.href='index.html'" style="cursor: pointer;"></i>
+            <h2>RESERVA REFINADA</h2> <i class="fa-regular fa-circle-user"></i>
         </header>
         
         <main>
-            <h1>Reserve a Table</h1>
-            <p class="subtitle">Experience culinary excellence crafted with precision.</p>
+            <h1>Reserva tu Mesa</h1>
+            <p class="subtitle">Disfruta de una experiencia culinaria diseñada con precisión.</p>
 
             <form id="form-paso-1">
                 <div class="card">
-                    <div class="card-header"><span>NUMBER OF GUESTS</span></div>
+                    <div class="card-header"><span>NÚMERO DE INVITADOS</span></div>
                     <div class="guest-selector" style="flex-wrap: wrap;">
                         <input type="radio" name="invitados" id="g0" value="0">
                         <label for="g0">0</label>
-                        
                         <input type="radio" name="invitados" id="g1" value="1">
                         <label for="g1">1</label>
-                        
                         <input type="radio" name="invitados" id="g2" value="2" checked>
                         <label for="g2">2</label>
-                        
                         <input type="radio" name="invitados" id="g3" value="3">
                         <label for="g3">3</label>
-                        
                         <input type="radio" name="invitados" id="g4" value="4">
                         <label for="g4">4</label>
-                        
                         <input type="radio" name="invitados" id="g5" value="5">
                         <label for="g5">5</label>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-header"><span>SELECT DATE</span></div>
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>SELECCIONAR MESA</span>
+                        <i class="fa-solid fa-map-location-dot" id="open-map" style="cursor: pointer; color: var(--accent-gold); font-size: 1.2rem;" title="Ver croquis del salón"></i>
+                    </div>
+                    <div class="table-selector">
+                        <input type="radio" name="mesa" id="m1" value="1" checked><label for="m1">1</label>
+                        <input type="radio" name="mesa" id="m2" value="2"><label for="m2">2</label>
+                        <input type="radio" name="mesa" id="m3" value="3"><label for="m3">3</label>
+                        <input type="radio" name="mesa" id="m4" value="4"><label for="m4">4</label>
+                        <input type="radio" name="mesa" id="m5" value="5"><label for="m5">5</label>
+                        <input type="radio" name="mesa" id="m6" value="6"><label for="m6">6</label>
+                        <input type="radio" name="mesa" id="m7" value="7"><label for="m7">7</label>
+                        <input type="radio" name="mesa" id="m8" value="8"><label for="m8">8</label>
+                        <input type="radio" name="mesa" id="m9" value="9"><label for="m9">9</label>
+                        <input type="radio" name="mesa" id="m10" value="10"><label for="m10">10</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><span>SELECCIONAR FECHA</span></div>
                     <div class="calendar-header">
                         <i class="fa-solid fa-chevron-left" id="prev-month"></i>
                         <h3 id="month-year">Cargando...</h3>
                         <i class="fa-solid fa-chevron-right" id="next-month"></i>
                     </div>
-                    
-                    <div class="calendar-grid" id="calendar-grid">
-                        </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
                 </div>
-                
+
                 <div class="card">
-                    <div class="card-header"><span>SELECT TIME</span></div>
+                    <div class="card-header"><span>SELECCIONAR HORA</span></div>
                     <div class="time-selector">
                         <input type="radio" id="t1" name="hora" value="18:00"><label for="t1">18:00</label>
                         <input type="radio" id="t2" name="hora" value="18:30"><label for="t2">18:30</label>
@@ -67,11 +78,34 @@
 
                 <div class="bottom-action">
                     <button type="submit" class="btn-main">
-                        CONTINUE TO REFINEMENT <i class="fa-solid fa-arrow-right"></i>
+                        CONTINUAR A DETALLES <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </form>
         </main>
+
+        <div id="map-modal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" id="close-map">&times;</span>
+                <h3 style="font-family: 'Playfair Display', serif; margin: 0 0 5px 0;">Croquis del Salón</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 15px 0;">Distribución espacial de nuestras mesas</p>
+                
+                <div class="restaurant-map-preview">
+                    <div class="map-stage">TERRAZA / ENTRADA PRINCIPAL</div>
+                    <div class="map-table-box">Mesa 1</div>
+                    <div class="map-table-box">Mesa 2</div>
+                    <div class="map-table-box">Mesa 3</div>
+                    <div class="map-table-box">Mesa 4</div>
+                    <div class="map-table-box">Mesa 5</div>
+                    <div class="map-table-box">Mesa 6</div>
+                    <div class="map-table-box">Mesa 7</div>
+                    <div class="map-table-box">Mesa 8</div>
+                    <div class="map-table-box">Mesa 9</div>
+                    <div style="grid-column: span 3; background: var(--accent-gold-light); border-color: var(--accent-gold); color: var(--accent-gold);" class="map-table-box">⭐ Mesa 10 (Zona VIP Premium)</div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <script src="../js/paso1.js"></script>
 </body>
