@@ -1,100 +1,169 @@
+<?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $nombre   = trim($_POST['nombre'] ?? '');
+    $correo   = trim($_POST['email'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
+    $notas    = trim($_POST['notas'] ?? '');
+
+    if ($nombre === '' || $correo === '' || $telefono === '') {
+
+        echo "<script>alert('Debe completar todos los campos obligatorios.');</script>";
+
+    } else {
+
+        $mail = new PHPMailer(true);
+
+        try {
+
+            // CONFIGURACIÓN SMTP
+            $mail->isSMTP();
+            $mail->Host = 'smtp.tudominio.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'correo@tudominio.com';
+            $mail->Password = 'TU_PASSWORD';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // REMITENTE Y DESTINATARIO
+            $mail->setFrom('correo@tudominio.com', 'Sistema de Reservas');
+            $mail->addAddress('reservas@tudominio.com', 'Administrador');
+
+            // CONTENIDO DEL CORREO
+            $mail->isHTML(true);
+            $mail->Subject = 'Nueva Reserva de Mesa';
+
+            $mail->Body = "
+                <h2>Nueva Reserva</h2>
+
+                <p><strong>Nombre:</strong> {$nombre}</p>
+
+                <p><strong>Email:</strong> {$correo}</p>
+
+                <p><strong>Teléfono:</strong> {$telefono}</p>
+
+                <p><strong>Notas:</strong><br>{$notas}</p>
+            ";
+
+            $mail->send();
+
+            echo "<script>
+                    alert('Reserva enviada correctamente.');
+                  </script>";
+
+        } catch (Exception $e) {
+
+            echo "<script>
+                    alert('Error al enviar la reserva: {$mail->ErrorInfo}');
+                  </script>";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Detalles de Reserva</title>
+
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/reservar_mesa.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
-            <h2>RESERVE & REFINE</h2>
-            <i class="fa-regular fa-circle-user"></i>
-        </header>
-        
-        <main>
-            <h1>Complete Your Details</h1>
-            <p class="subtitle">Please provide your contact details to secure your table.</p>
-            
-            <form id="form-paso-2"> 
-                <div class="card">
-                    <div class="card-header"><span>CONTACT INFO</span></div>
-                    <input type="text" id="nombre" placeholder="Full Name (ej. Julio Cesar)" required>
-                    <input type="email" id="email" placeholder="Email Address" required style="margin-top: 15px;">
-                    <input type="tel" id="telefono" placeholder="Phone Number" required style="margin-top: 15px;">
+
+<div class="app-container">
+
+    <header>
+        <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
+        <h2>RESERVE & REFINE</h2>
+        <i class="fa-regular fa-circle-user"></i>
+    </header>
+
+    <main>
+
+        <h1>Complete Your Details</h1>
+
+        <p class="subtitle">
+            Please provide your contact details to secure your table.
+        </p>
+
+        <form id="form-paso-2" method="POST">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>CONTACT INFO</span>
                 </div>
-                
-                <div class="card">
-                    <div class="card-header"><span>SPECIAL REQUESTS / NOTES</span></div>
-                    <textarea id="notas" rows="3" placeholder="Allergies, anniversaries, baby chairs..."></textarea>
+
+                <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    placeholder="Full Name (ej. Julio Cesar)"
+                    required>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Email Address"
+                    required
+                    style="margin-top: 15px;">
+
+                <input
+                    type="tel"
+                    id="telefono"
+                    name="telefono"
+                    placeholder="Phone Number"
+                    required
+                    style="margin-top: 15px;">
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>SPECIAL REQUESTS / NOTES</span>
                 </div>
-                
-                <div class="bottom-action">
-                    <button type="submit" id="btn-submit" class="btn-main">
-                        CONFIRM RESERVATION <i class="fa-solid fa-check"></i>
-                    </button>
-                </div>
-            </form>
-        </main>
-    </div>
-        <?php
-        use PHPMailer\PHPMailer\PHPMailer;
-        use PHPMailer\PHPMailer\Exception;
 
-        require __DIR__ . '/../vendor/autoload.php';
+                <textarea
+                    id="notas"
+                    name="notas"
+                    rows="3"
+                    placeholder="Allergies, anniversaries, baby chairs..."></textarea>
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if ($response_data->success) {
-                $nombre = $_POST['Nombre'] ?? '';
-                $correo = $_POST['Email'] ?? '';
-                $mensaje = $_POST['Mensaje'] ?? '';
+            </div>
 
-                if ($nombre === '' || $correo === '' || $mensaje === '') {
-                    echo '<script>alert("Contenido vacío.")</script>';
-                } else {
-                    $mail = new PHPMailer(true);
+            <div class="bottom-action">
 
-                    try {
-                        //configuracion smtp
-                        $mail->isSMTP();
-                        $mail->Host = '';
-                        $mail->SMTPAuth = ;
-                        $mail->Username = '';
-                        $mail->Password = '';
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 587;
+                <button
+                    type="submit"
+                    id="btn-submit"
+                    class="btn-main">
 
-                        //remitente y destinatario
-                        $mail->setFrom('', '');
-                        $mail->addAddress('', '');
+                    CONFIRM RESERVATION
+                    <i class="fa-solid fa-check"></i>
 
-                        //contenido
-                        $mail->isHTML(true);
-                        $mail->Subject = 'Nuevo mensaje del formulario de contacto';
-                        $mail->Body = "<h2>Nuevo Mensaje de Contacto</h2>";
-                        $mail->Body .= "<p><b>Nombre:</b> $nombre</p>";
-                        $mail->Body .= "<p><b>Correo:</b> $correo</p>";
-                        $mail->Body .= "<p><b>Mensaje:</b> $mensaje</p>";
+                </button>
 
-                        if ($mail->send()) {
-                            echo '<script>alert("Gracias por tu mensaje. Pronto nos contactaremos con usted.")</script>';
-                        } else {
-                            echo '<script>alert("Hubo un error al enviar tu mensaje. Por favor, intenta nuevamente.")</script>';
-                            exit;
-                        }
-                    } catch (Exception $e) {
-                        echo 'Error al enviar el correo: ', $mail->ErrorInfo;
-                    } 
-                }  
-            } else {
-                echo '<script>alert("Captcha inválido, por favor inténtalo de nuevo.")</script>';
-            }
-        }
-    ?>
-    <script src="../js/paso2.js"></script>
+            </div>
+
+        </form>
+
+    </main>
+
+</div>
+
+<script src="../js/paso2.js"></script>
+
 </body>
 </html>
