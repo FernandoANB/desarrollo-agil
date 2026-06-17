@@ -41,6 +41,60 @@
             </form>
         </main>
     </div>
+        <?php
+        use PHPMailer\PHPMailer\PHPMailer;
+        use PHPMailer\PHPMailer\Exception;
+
+        require __DIR__ . '/../vendor/autoload.php';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($response_data->success) {
+                $nombre = $_POST['Nombre'] ?? '';
+                $correo = $_POST['Email'] ?? '';
+                $mensaje = $_POST['Mensaje'] ?? '';
+
+                if ($nombre === '' || $correo === '' || $mensaje === '') {
+                    echo '<script>alert("Contenido vacío.")</script>';
+                } else {
+                    $mail = new PHPMailer(true);
+
+                    try {
+                        //configuracion smtp
+                        $mail->isSMTP();
+                        $mail->Host = '';
+                        $mail->SMTPAuth = ;
+                        $mail->Username = '';
+                        $mail->Password = '';
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                        $mail->Port = 587;
+
+                        //remitente y destinatario
+                        $mail->setFrom('', '');
+                        $mail->addAddress('', '');
+
+                        //contenido
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Nuevo mensaje del formulario de contacto';
+                        $mail->Body = "<h2>Nuevo Mensaje de Contacto</h2>";
+                        $mail->Body .= "<p><b>Nombre:</b> $nombre</p>";
+                        $mail->Body .= "<p><b>Correo:</b> $correo</p>";
+                        $mail->Body .= "<p><b>Mensaje:</b> $mensaje</p>";
+
+                        if ($mail->send()) {
+                            echo '<script>alert("Gracias por tu mensaje. Pronto nos contactaremos con usted.")</script>';
+                        } else {
+                            echo '<script>alert("Hubo un error al enviar tu mensaje. Por favor, intenta nuevamente.")</script>';
+                            exit;
+                        }
+                    } catch (Exception $e) {
+                        echo 'Error al enviar el correo: ', $mail->ErrorInfo;
+                    } 
+                }  
+            } else {
+                echo '<script>alert("Captcha inválido, por favor inténtalo de nuevo.")</script>';
+            }
+        }
+    ?>
     <script src="../js/paso2.js"></script>
 </body>
 </html>
