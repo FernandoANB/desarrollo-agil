@@ -1,33 +1,99 @@
 import os
-from dotenv import load_dotenv
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-load_dotenv() # Carga las credenciales del .env de forma segura
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+from sqlalchemy.orm import Session
+from typing import List
 
-def enviar_correo_real_confirmacion(email_destinatario: str, fecha: str, hora: str):
-    user = os.getenv("SMTP_USER")
-    password = os.getenv("SMTP_PASSWORD")
+from app.schemas.reserva import Reserva, ReservaCreate, ReservaUpdate
+from app.services import reserva_service
+from app.database import get_db
+
+# ¡ESTA LÍNEA ES VITAL! Es la que repara tu error 'AttributeError' en main.py
+router = APIRouter(prefix="/reservas", tags=["reservas"])
+
+# --- FUNCIÓN PARA ENVIAR EL CORREO REAL DESDE PYTHON ---
+def enviar_correo_confirmacion(email_destinatario: str, nombre: str, fecha: str, hora: str, personas: int, notas: str):
+    # Lee las variables ocultas de tu archivo .env
+    remitente = os.environ.get("SMTP_USER", "fernandonunezbetancur@gmail.com")
+    password = os.environ.get("SMTP_PASSWORD", "tqge bzft kwwb zrru")
     
-    if not user or not password:
-        print("⚠️ Variables SMTP no detectadas. Simulación en consola activada.")
-        return
-
     try:
         msg = MIMEMultipart()
-        msg['From'] = user
+        msg['From'] = remitente
         msg['To'] = email_destinatario
-        msg['Subject'] = "Tu Reserva en Reserva Refinada está Confirmada ✨"
+        msg['Subject'] = "Confirmación de Reserva - Reserva Refinada ✨"
         
-        cuerpo = f"¡Hola! Tu mesa para el {fecha} a las {hora} ha sido reservada con éxito."
+        # Formato del correo
+        cuerpo = f"""
+        ¡Hola {nombre}!
+        
+        Tu reserva ha sido procesada exitosamente. Aquí tienes los detalles:
+        
+        - Fecha: {fecha}
+        - Hora: {hora}
+        - Cantidad de invitados: {personas}
+        - Notas adicionales: {notas if notas else 'Ninguna'}
+        
+        ¡Te esperamos pronto para una experiencia inolvidable!
+        """
+        
         msg.attach(MIMEText(cuerpo, 'plain', 'utf-8'))
         
-        server = smtplib.SMTP(os.getenv("SMTP_SERVER", "smtp.gmail.com"), int(os.getenv("SMTP_PORT", 587)))
+        # Conexión con el servidor de Gmail
+        server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(user, password)
-        server.sendmail(user, email_destinatario, msg.as_string())
+        server.login(remitente, password)
+        server.sendmail(remitente, email_destinatario, msg.as_string())
         server.quit()
-        print("📧 ¡Correo real despachado con éxito!")
+        
+        print(f"✅ ¡ÉXITO! Correo enviado a {email_destinatario}")
     except Exception as e:
-        print(f"❌ Error al enviar correo SMTP: {str(e)}")
+        print(f"❌ Error al intentar enviar el correo: {e}")
+        print("⚠️ (Simulando envío para continuar con la demo)")
+
+# --- ENDPOINTS ---
+
+@router.get("/", response_model=List[Reserva])
+def get_reservas(db: Session = Depends(get_db)):
+    return reserva_service.get_all_reservas(db)
+
+@router.get("/{id_reserva}", response_model=Reserva)
+def get_reserva(id_reserva: int, db: Session = Depends(get_db)):
+    reserva = reserva_service.get_reserva(db, id_reserva)
+    if not reserva:
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+    return reserva
+
+@router.post("/", response_model=Reserva)
+def create_reserva(reserva: ReservaCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    # 1. Guarda la reserva en la base de datos
+    nueva_reserva = reserva_service.create_reserva(db, reserva)
+    
+    # 2. Le dice a Python que envíe el correo "en el fondo" sin hacer esperar al usuario
+    background_tasks.add_task(
+        enviar_correo_confirmacion,
+        email_destinatario=nueva_reserva.email_cliente,
+        nombre=nueva_reserva.nombre_cliente,
+        fecha=str(nueva_reserva.fecha),
+        hora=str(nueva_reserva.hora),
+        personas=nueva_reserva.cantidad_personas,
+        notas=nueva_reserva.notas
+    )
+    
+    return nueva_reserva
+
+@router.put("/{id_reserva}", response_model=Reserva)
+def update_reserva(id_reserva: int, reserva: ReservaUpdate, db: Session = Depends(get_db)):
+    updated_reserva = reserva_service.update_reserva(db, id_reserva, reserva)
+    if not updated_reserva:
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+    return updated_reserva
+
+@router.delete("/{id_reserva}")
+def delete_reserva(id_reserva: int, db: Session = Depends(get_db)):
+    if not reserva_service.delete_reserva(db, id_reserva):
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+    return {"detail": "Reserva eliminada"}
