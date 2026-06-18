@@ -3,67 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Servicios</title>
+    <title>Gestión de Servicios - Admin</title>
+    
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
+        .admin-container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .header {
-            background: white;
             padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 14px;
         }
 
         .empresa-selector {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
-            gap: 10px;
+            gap: 15px;
             align-items: center;
             flex-wrap: wrap;
+            border: 1px solid var(--border-color);
         }
 
         .empresa-selector label {
             font-weight: 600;
-            color: #333;
+            color: var(--text-main);
         }
 
         .empresa-selector input {
             padding: 8px 12px;
-            border: 2px solid #667eea;
-            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
             font-size: 14px;
             width: 100px;
+            color: var(--text-main);
         }
 
         .main-content {
@@ -72,19 +48,21 @@
             gap: 20px;
         }
 
-        .formulario {
-            background: white;
+        .form-section, .lista-servicios {
+            background: var(--card-bg);
             padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
             height: fit-content;
         }
 
-        .formulario h2 {
-            color: #333;
+        .form-section h3, .lista-servicios h3 {
+            color: var(--text-main);
+            margin-top: 0;
             margin-bottom: 20px;
             font-size: 18px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
         }
 
@@ -95,33 +73,29 @@
         .form-group label {
             display: block;
             margin-bottom: 5px;
-            color: #333;
-            font-weight: 500;
+            color: var(--text-main);
+            font-weight: 600;
             font-size: 14px;
         }
 
-        .form-group input,
+        .form-group input[type="text"],
+        .form-group input[type="number"],
         .form-group textarea,
         .form-group select {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
             font-size: 14px;
             font-family: inherit;
+            box-sizing: border-box;
+            background-color: transparent;
+            color: var(--text-main);
         }
 
         .form-group textarea {
             resize: vertical;
             min-height: 80px;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .checkbox-group {
@@ -142,59 +116,53 @@
             margin-top: 20px;
         }
 
-        button {
+        .btn-primary {
+            background: var(--text-main);
+            color: white;
             padding: 10px 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        .btn-guardar {
-            background: #667eea;
-            color: white;
+        .btn-primary:hover {
+            background: #333;
         }
 
-        .btn-guardar:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        .btn-secondary {
+            background: var(--primary-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .btn-limpiar {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .btn-limpiar:hover {
+        .btn-secondary:hover {
             background: #e0e0e0;
         }
 
-        .btn-eliminar {
-            background: #ff6b6b;
+        .btn-danger {
+            background: #d32f2f;
             color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
             width: 100%;
+            margin-top: 10px;
         }
 
-        .btn-eliminar:hover {
-            background: #ff5252;
-        }
-
-        .lista-servicios {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .lista-servicios h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 18px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+        .btn-danger:hover {
+            background: #b71c1c;
         }
 
         .servicios-grid {
@@ -203,36 +171,35 @@
         }
 
         .servicio-card {
-            background: #f8f9fa;
-            border: 1px solid #e0e0e0;
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 4px solid #667eea;
+            transition: all 0.2s ease;
+            border-left: 4px solid var(--accent-gold);
         }
 
         .servicio-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transform: translateX(5px);
-            border-left-color: #764ba2;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
 
         .servicio-card.selected {
-            background: #e8ecff;
-            border-color: #667eea;
+            background: var(--accent-gold-light);
+            border-color: var(--accent-gold);
         }
 
         .servicio-nombre {
             font-weight: 600;
-            color: #333;
+            color: var(--text-main);
             margin-bottom: 5px;
-            font-size: 15px;
+            font-size: 16px;
         }
 
         .servicio-empresa {
             font-size: 12px;
-            color: #999;
+            color: var(--text-muted);
             margin-bottom: 8px;
         }
 
@@ -241,7 +208,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             font-size: 13px;
-            color: #666;
+            color: var(--text-muted);
             margin-bottom: 10px;
         }
 
@@ -251,158 +218,109 @@
         }
 
         .servicio-info-label {
-            font-weight: 500;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .servicio-estado {
             display: inline-block;
-            padding: 3px 8px;
+            padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
             margin-top: 8px;
         }
 
-        .estado-activo {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .estado-inactivo {
-            background: #f8d7da;
-            color: #721c24;
-        }
+        .estado-activo { background: #eef5ee; color: #4CAF50; border: 1px solid #4CAF50; }
+        .estado-inactivo { background: #fee; color: #d32f2f; border: 1px solid #d32f2f; }
 
         .servicio-acciones {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
-        .btn-editar {
-            background: #667eea;
+        .btn-editar-card {
+            background: var(--text-main);
             color: white;
-            padding: 6px 12px;
+            padding: 8px 12px;
             font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
-
-        .btn-editar:hover {
-            background: #5568d3;
-        }
-
+        
         .btn-eliminar-card {
-            background: #ff6b6b;
+            background: #d32f2f;
             color: white;
-            padding: 6px 12px;
+            padding: 8px 12px;
             font-size: 12px;
-        }
-
-        .btn-eliminar-card:hover {
-            background: #ff5252;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         .mensaje {
             padding: 12px 15px;
-            border-radius: 5px;
+            border-radius: 4px;
             margin-bottom: 15px;
             font-size: 14px;
             display: none;
         }
 
-        .mensaje.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
+        .mensaje.error { background: #fee; color: #d32f2f; border-left: 4px solid #d32f2f; display: block; }
+        .mensaje.exito { background: #eef5ee; color: #4CAF50; border-left: 4px solid #4CAF50; display: block; }
 
-        .mensaje.exito {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block;
-        }
-
-        .vacio {
-            text-align: center;
-            color: #999;
-            padding: 30px;
-            font-size: 14px;
-        }
+        .vacio { text-align: center; color: var(--text-muted); padding: 30px; font-size: 14px; }
 
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-
-            .servicio-info {
-                grid-template-columns: 1fr;
-            }
-
-            .servicio-acciones {
-                grid-template-columns: 1fr;
-            }
-
-            .empresa-selector {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+            .main-content { grid-template-columns: 1fr; }
+            .servicio-info { grid-template-columns: 1fr; }
         }
 
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-        }
-
+        .loading { text-align: center; padding: 20px; color: var(--text-muted); }
         .spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border-top: 3px solid var(--accent-gold);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             animation: spin 1s linear infinite;
             margin: 0 auto 10px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>📋 Gestión de Servicios</h1>
-            <p>Administra los servicios/platos disponibles en tu restaurante</p>
+    <div class="admin-container">
+        
+        <div style="margin-bottom: 30px;">
+            <h1 style="text-align: left; margin: 0; font-size: 2.5rem;"><i class="fa-solid fa-utensils"></i> Gestión de Servicios</h1>
+            <p class="subtitle" style="text-align: left; padding: 0; margin-top: 5px;">Administra los servicios o platos disponibles en tu restaurante</p>
         </div>
 
-        <!-- Selector de Empresa -->
         <div class="empresa-selector">
             <label for="empresaId">Empresa ID:</label>
             <input type="number" id="empresaId" value="1" min="1">
-            <button class="btn-guardar" onclick="cargarServicios()" style="margin: 0;">Cargar Servicios</button>
+            <button class="btn-primary" onclick="cargarServicios()" style="margin: 0;">Cargar Servicios</button>
         </div>
 
-        <!-- Contenido Principal -->
         <div class="main-content">
-            <!-- Formulario -->
-            <div class="formulario">
-                <h2>➕ Nuevo Servicio</h2>
+            <div class="form-section">
+                <h3 id="form-titulo"><i class="fa-solid fa-plus"></i> Nuevo Servicio</h3>
                 
                 <div id="mensajeFormulario" class="mensaje"></div>
 
                 <div class="form-group">
                     <label for="nombre">Nombre del Servicio *</label>
-                    <input type="text" id="nombre" placeholder="Ej: Pasta Carbonara">
+                    <input type="text" id="nombre" placeholder="Ej: Menú Degustación">
                 </div>
 
                 <div class="form-group">
                     <label for="descripcion">Descripción</label>
-                    <textarea id="descripcion" placeholder="Detalles del servicio/plato"></textarea>
+                    <textarea id="descripcion" placeholder="Detalles del servicio o plato"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -417,22 +335,21 @@
 
                 <div class="form-group checkbox-group">
                     <input type="checkbox" id="activo" checked>
-                    <label for="activo" style="margin: 0;">Activo (disponible)</label>
+                    <label for="activo" style="margin: 0;">Activo (disponible para reserva)</label>
                 </div>
 
                 <div class="buttons">
-                    <button class="btn-guardar" onclick="guardarServicio()">💾 Guardar</button>
-                    <button class="btn-limpiar" onclick="limpiarFormulario()">🧹 Limpiar</button>
+                    <button class="btn-primary" onclick="guardarServicio()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                    <button class="btn-secondary" onclick="limpiarFormulario()"><i class="fa-solid fa-eraser"></i> Limpiar</button>
                 </div>
 
-                <div id="btnEliminar" style="display: none; margin-top: 10px;">
-                    <button class="btn-eliminar" onclick="eliminarServicio()">🗑️ Eliminar Servicio</button>
+                <div id="btnEliminar" style="display: none;">
+                    <button class="btn-danger" onclick="eliminarServicio()"><i class="fa-solid fa-trash"></i> Eliminar Servicio</button>
                 </div>
             </div>
 
-            <!-- Lista de Servicios -->
             <div class="lista-servicios">
-                <h2>📱 Servicios de la Empresa</h2>
+                <h3><i class="fa-solid fa-list"></i> Servicios de la Empresa</h3>
                 <div id="mensajeLista" class="mensaje"></div>
                 <div id="serviciosList" class="servicios-grid">
                     <div class="loading">
@@ -448,12 +365,10 @@
         let empresaId = 1;
         let servicioActual = null;
 
-        // Cargar servicios al abrir la página
         window.addEventListener('load', () => {
             cargarServicios();
         });
 
-        // Cambiar empresa
         document.getElementById('empresaId').addEventListener('change', (e) => {
             empresaId = parseInt(e.target.value);
             limpiarFormulario();
@@ -472,8 +387,6 @@
                 }
 
                 let servicios = await response.json();
-                
-                // Filtrar por empresa
                 servicios = servicios.filter(s => s.id_empresa === empresaId);
 
                 if (servicios.length === 0) {
@@ -489,7 +402,7 @@
                         <div class="servicio-nombre">${servicio.nombre}</div>
                         <div class="servicio-empresa">ID: ${servicio.id_servicio}</div>
                         
-                        ${servicio.descripcion ? `<div style="font-size: 13px; color: #666; margin-bottom: 8px;">${servicio.descripcion}</div>` : ''}
+                        ${servicio.descripcion ? `<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">${servicio.descripcion}</div>` : ''}
                         
                         <div class="servicio-info">
                             ${servicio.duracion_minutos ? `<div class="servicio-info-item"><span class="servicio-info-label">Duración:</span> <span>${servicio.duracion_minutos} min</span></div>` : ''}
@@ -501,8 +414,8 @@
                         </span>
                         
                         <div class="servicio-acciones">
-                            <button class="btn-editar" onclick="editarServicio(${servicio.id_servicio})">✏️ Editar</button>
-                            <button class="btn-eliminar-card" onclick="confirmarEliminar(${servicio.id_servicio})">🗑️ Eliminar</button>
+                            <button class="btn-editar-card" onclick="editarServicio(${servicio.id_servicio})"><i class="fa-solid fa-pen"></i> Editar</button>
+                            <button class="btn-eliminar-card" onclick="confirmarEliminar(${servicio.id_servicio})"><i class="fa-solid fa-trash"></i> Eliminar</button>
                         </div>
                     `;
                     
@@ -532,18 +445,14 @@
                 const servicio = await response.json();
                 servicioActual = servicio;
 
-                // Llenar formulario
                 document.getElementById('nombre').value = servicio.nombre;
                 document.getElementById('descripcion').value = servicio.descripcion || '';
                 document.getElementById('duracionMinutos').value = servicio.duracion_minutos || '';
                 document.getElementById('capacidadMaxima').value = servicio.capacidad_maxima;
                 document.getElementById('activo').checked = servicio.activo;
 
-                // Mostrar botón eliminar
                 document.getElementById('btnEliminar').style.display = 'block';
-
-                // Cambiar título del formulario
-                document.querySelector('.formulario h2').textContent = '✏️ Editar Servicio';
+                document.getElementById('form-titulo').innerHTML = '<i class="fa-solid fa-pen"></i> Editar Servicio';
 
             } catch (error) {
                 mostrarMensaje('mensajeFormulario', `Error: ${error.message}`, 'error');
@@ -567,13 +476,10 @@
                 let url = 'http://localhost:8000/servicios/';
 
                 if (servicioActual) {
-                    // Actualizar
                     url += servicioActual.id_servicio;
                     response = await fetch(url, {
                         method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             id_empresa: empresaId,
                             nombre,
@@ -584,12 +490,9 @@
                         })
                     });
                 } else {
-                    // Crear nuevo
                     response = await fetch(url, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             id_empresa: empresaId,
                             nombre,
@@ -620,22 +523,16 @@
 
         async function eliminarServicio() {
             if (!servicioActual) return;
-
-            if (!confirm('¿Estás seguro de que quieres eliminar este servicio?')) {
-                return;
-            }
+            if (!confirm('¿Estás seguro de que quieres eliminar este servicio?')) return;
 
             try {
                 const response = await fetch(`http://localhost:8000/servicios/${servicioActual.id_servicio}`, {
                     method: 'DELETE'
                 });
 
-                if (!response.ok) {
-                    throw new Error('Error al eliminar servicio');
-                }
+                if (!response.ok) throw new Error('Error al eliminar servicio');
 
                 mostrarMensaje('mensajeFormulario', 'Servicio eliminado ✅', 'exito');
-                
                 setTimeout(() => {
                     limpiarFormulario();
                     cargarServicios();
@@ -648,9 +545,7 @@
 
         function confirmarEliminar(id) {
             if (confirm('¿Eliminar este servicio?')) {
-                fetch(`http://localhost:8000/servicios/${id}`, {
-                    method: 'DELETE'
-                })
+                fetch(`http://localhost:8000/servicios/${id}`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
                         mostrarMensaje('mensajeLista', 'Servicio eliminado ✅', 'exito');
@@ -670,7 +565,7 @@
             document.getElementById('capacidadMaxima').value = '1';
             document.getElementById('activo').checked = true;
             document.getElementById('btnEliminar').style.display = 'none';
-            document.querySelector('.formulario h2').textContent = '➕ Nuevo Servicio';
+            document.getElementById('form-titulo').innerHTML = '<i class="fa-solid fa-plus"></i> Nuevo Servicio';
             servicioActual = null;
             document.getElementById('mensajeFormulario').innerHTML = '';
             document.querySelectorAll('.servicio-card').forEach(c => c.classList.remove('selected'));
