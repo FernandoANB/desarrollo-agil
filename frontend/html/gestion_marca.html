@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Marca - Admin</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .marca-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        .form-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group input[type="color"] {
+            height: 45px;
+            padding: 2px;
+        }
+        
+        .color-preview {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        
+        .color-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .btn-save {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+        
+        .btn-upload {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-upload:hover {
+            background-color: #0b7dda;
+        }
+        
+        .preview-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .preview-header {
+            background: linear-gradient(135deg, var(--preview-primary, #2196F3), var(--preview-secondary, #1976D2));
+            padding: 20px;
+            border-radius: 4px;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .preview-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 4px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .preview-logo img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .preview-logo.empty {
+            color: #ccc;
+            font-size: 12px;
+        }
+        
+        .preview-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .preview-description {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .preview-fotos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .preview-foto {
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        
+        .preview-foto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-foto.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 12px;
+        }
+        
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .success-message,
+        .error-message {
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #eef5ee;
+            color: #4CAF50;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+        
+        .hex-input-group {
+            display: grid;
+            grid-template-columns: 1fr 100px;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .hex-input-group input {
+            grid-column: 1;
+        }
+        
+        .hex-input-group input[type="color"] {
+            grid-column: 2;
+            grid-row: 1 / 3;
+        }
+        
+        @media (max-width: 768px) {
+            .marca-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Personalización del Perfil y Marca (US-14)</h1>
+        <p class="subtitle">Configura logo, colores, descripción y fotos de tu restaurante</p>
+        
+        <div id="messages" class="messages"></div>
+        
+        <div class="marca-layout">
+            <!-- Formulario de Configuración -->
+            <div>
+                <div class="form-section">
+                    <h3>Información de tu Marca</h3>
+                    
+                    <div class="form-group">
+                        <label>Nombre del Restaurante:</label>
+                        <input type="text" id="nombre" placeholder="Nombre del restaurante">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descripción:</label>
+                        <textarea id="descripcion" placeholder="Describe tu restaurante, tipos de comida, especialidades, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>URL del Logo:</label>
+                        <input type="url" id="logoUrl" placeholder="https://ejemplo.com/logo.png">
+                        <small>O copia el enlace de tu logo desde tu servidor</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Color Primario (HEX):</label>
+                        <div class="hex-input-group">
+                            <input type="text" id="colorPrimario" placeholder="#2196F3" value="#2196F3">
+                            <input type="color" id="colorPrimarioColor" value="#2196F3" 
+                                   onchange="sincronizarColor('colorPrimario', 'colorPrimarioColor')">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Color Secundario (HEX):</label>
+                        <div class="hex-input-group">
+                            <input type="text" id="colorSecundario" placeholder="#1976D2" value="#1976D2">
+                            <input type="color" id="colorSecundarioColor" value="#1976D2" 
+                                   onchange="sincronizarColor('colorSecundario', 'colorSecundarioColor')">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>URLs de Fotos (separadas por comas):</label>
+                        <textarea id="fotosUrls" placeholder="https://ejemplo.com/foto1.jpg, https://ejemplo.com/foto2.jpg, https://ejemplo.com/foto3.jpg"></textarea>
+                        <small>Ingresa las URLs de tus fotos separadas por comas</small>
+                    </div>
+                    
+                    <button class="btn-save" onclick="guardarMarca()">Guardar Cambios de Marca</button>
+                </div>
+            </div>
+            
+            <!-- Vista Previa -->
+            <div>
+                <div class="preview-section">
+                    <h3>Vista Previa</h3>
+                    
+                    <div class="preview-header" id="previewHeader" style="--preview-primary: #2196F3; --preview-secondary: #1976D2;">
+                        <div class="preview-logo" id="previewLogo" class="empty">
+                            <span>Logo</span>
+                        </div>
+                        <div class="preview-title" id="previewTitle">Mi Restaurante</div>
+                        <div class="preview-description" id="previewDesc">
+                            Bienvenido a nuestro restaurante
+                        </div>
+                    </div>
+                    
+                    <h4>Galería de Fotos:</h4>
+                    <div class="preview-fotos" id="previewFotos">
+                        <div class="preview-foto empty"><span>Foto 1</span></div>
+                        <div class="preview-foto empty"><span>Foto 2</span></div>
+                        <div class="preview-foto empty"><span>Foto 3</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let empresaId = 1; // Cambiar según el usuario logueado
+        let empresaActual = null;
+        
+        async function cargarConfiguracionMarca() {
+            try {
+                const response = await fetch(`${API_URL}/empresas/${empresaId}`);
+                empresaActual = await response.json();
+                
+                // Llenar formulario
+                document.getElementById('nombre').value = empresaActual.nombre || '';
+                document.getElementById('descripcion').value = empresaActual.descripcion || '';
+                document.getElementById('logoUrl').value = empresaActual.logo_url || '';
+                document.getElementById('colorPrimario').value = empresaActual.color_primario || '#2196F3';
+                document.getElementById('colorPrimarioColor').value = empresaActual.color_primario || '#2196F3';
+                document.getElementById('colorSecundario').value = empresaActual.color_secundario || '#1976D2';
+                document.getElementById('colorSecundarioColor').value = empresaActual.color_secundario || '#1976D2';
+                
+                // Parsar URLs de fotos
+                let fotosUrls = [];
+                if (empresaActual.fotos_urls) {
+                    try {
+                        fotosUrls = JSON.parse(empresaActual.fotos_urls);
+                    } catch {
+                        fotosUrls = empresaActual.fotos_urls.split(',').map(f => f.trim());
+                    }
+                }
+                document.getElementById('fotosUrls').value = fotosUrls.join(', ');
+                
+                // Actualizar preview
+                actualizarPreview();
+            } catch (error) {
+                console.error('Error cargando configuración:', error);
+                mostrarError('Error al cargar la configuración de marca');
+            }
+        }
+        
+        function sincronizarColor(inputId, colorPickerId) {
+            const valor = document.getElementById(inputId).value;
+            if (/^#[0-9A-F]{6}$/i.test(valor)) {
+                document.getElementById(colorPickerId).value = valor;
+            }
+        }
+        
+        function actualizarPreview() {
+            const nombre = document.getElementById('nombre').value || 'Mi Restaurante';
+            const descripcion = document.getElementById('descripcion').value || 'Bienvenido a nuestro restaurante';
+            const logo = document.getElementById('logoUrl').value;
+            const colorPrimario = document.getElementById('colorPrimario').value || '#2196F3';
+            const colorSecundario = document.getElementById('colorSecundario').value || '#1976D2';
+            const fotosString = document.getElementById('fotosUrls').value;
+            
+            // Actualizar header
+            const previewHeader = document.getElementById('previewHeader');
+            previewHeader.style.setProperty('--preview-primary', colorPrimario);
+            previewHeader.style.setProperty('--preview-secondary', colorSecundario);
+            previewHeader.style.background = `linear-gradient(135deg, ${colorPrimario}, ${colorSecundario})`;
+            
+            // Actualizar título
+            document.getElementById('previewTitle').textContent = nombre;
+            document.getElementById('previewDesc').textContent = descripcion;
+            
+            // Actualizar logo
+            const previewLogo = document.getElementById('previewLogo');
+            if (logo) {
+                previewLogo.classList.remove('empty');
+                previewLogo.innerHTML = `<img src="${logo}" alt="Logo" onerror="this.src=''">`;
+            } else {
+                previewLogo.classList.add('empty');
+                previewLogo.innerHTML = '<span>Logo</span>';
+            }
+            
+            // Actualizar fotos
+            const fotos = fotosString.split(',').map(f => f.trim()).filter(f => f);
+            const previewFotos = document.getElementById('previewFotos');
+            previewFotos.innerHTML = '';
+            
+            for (let i = 0; i < 3; i++) {
+                const foto = fotos[i];
+                const fotoDiv = document.createElement('div');
+                fotoDiv.className = 'preview-foto';
+                
+                if (foto) {
+                    fotoDiv.classList.remove('empty');
+                    fotoDiv.innerHTML = `<img src="${foto}" alt="Foto ${i+1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'">`;
+                } else {
+                    fotoDiv.classList.add('empty');
+                    fotoDiv.innerHTML = `<span>Foto ${i+1}</span>`;
+                }
+                previewFotos.appendChild(fotoDiv);
+            }
+        }
+        
+        async function guardarMarca() {
+            const nombre = document.getElementById('nombre').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const logoUrl = document.getElementById('logoUrl').value;
+            const colorPrimario = document.getElementById('colorPrimario').value;
+            const colorSecundario = document.getElementById('colorSecundario').value;
+            const fotosString = document.getElementById('fotosUrls').value;
+            
+            // Validar colores HEX
+            if (!validarColorHex(colorPrimario) || !validarColorHex(colorSecundario)) {
+                mostrarError('Los colores deben estar en formato HEX válido (ej: #2196F3)');
+                return;
+            }
+            
+            // Parsear fotos
+            const fotos = fotosString.split(',').map(f => f.trim()).filter(f => f);
+            
+            try {
+                const params = new URLSearchParams();
+                if (logoUrl) params.append('logo_url', logoUrl);
+                if (colorPrimario) params.append('color_primario', colorPrimario);
+                if (colorSecundario) params.append('color_secundario', colorSecundario);
+                if (fotos.length > 0) params.append('fotos_urls', JSON.stringify(fotos));
+                
+                const response = await fetch(`${API_URL}/empresas/${empresaId}/marca?${params.toString()}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    // Actualizar empresa con los nuevos datos
+                    const responseUpdate = await fetch(`${API_URL}/empresas/${empresaId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            nombre: nombre,
+                            descripcion: descripcion
+                        })
+                    });
+                    
+                    if (responseUpdate.ok) {
+                        mostrarExito('Configuración de marca guardada exitosamente');
+                        cargarConfiguracionMarca();
+                    }
+                } else {
+                    const error = await response.json();
+                    mostrarError(error.detail || 'Error al guardar la marca');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarError('Error al guardar la configuración de marca');
+            }
+        }
+        
+        function validarColorHex(color) {
+            return /^#[0-9A-F]{6}$/i.test(color);
+        }
+        
+        function mostrarExito(mensaje) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="success-message" style="display: block;">${mensaje}</div>`;
+            setTimeout(() => {
+                messagesDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        function mostrarError(mensaje) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="error-message" style="display: block;">${mensaje}</div>`;
+        }
+        
+        // Event listeners para actualización en vivo
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarConfiguracionMarca();
+            
+            // Actualizar preview mientras escribo
+            document.getElementById('nombre').addEventListener('input', actualizarPreview);
+            document.getElementById('descripcion').addEventListener('input', actualizarPreview);
+            document.getElementById('logoUrl').addEventListener('input', actualizarPreview);
+            document.getElementById('colorPrimario').addEventListener('input', function() {
+                document.getElementById('colorPrimarioColor').value = this.value;
+                actualizarPreview();
+            });
+            document.getElementById('colorPrimarioColor').addEventListener('input', function() {
+                document.getElementById('colorPrimario').value = this.value;
+                actualizarPreview();
+            });
+            document.getElementById('colorSecundario').addEventListener('input', function() {
+                document.getElementById('colorSecundarioColor').value = this.value;
+                actualizarPreview();
+            });
+            document.getElementById('colorSecundarioColor').addEventListener('input', function() {
+                document.getElementById('colorSecundario').value = this.value;
+                actualizarPreview();
+            });
+            document.getElementById('fotosUrls').addEventListener('input', actualizarPreview);
+        });
+    </script>
+</body>
+</html>

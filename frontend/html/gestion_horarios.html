@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Horarios - Admin</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .horario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .dia-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .dia-card h3 {
+            margin-top: 0;
+            color: var(--color-primary, #333);
+        }
+        
+        .dia-card.cerrado {
+            background-color: #fee;
+            opacity: 0.7;
+        }
+        
+        .dia-card.cerrado h3 {
+            color: #d32f2f;
+            text-decoration: line-through;
+        }
+        
+        .horario-input-group {
+            margin: 15px 0;
+        }
+        
+        .horario-input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .horario-input-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .toggle-group {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .btn-save {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            padding: 10px;
+            background-color: #eef5ee;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            padding: 10px;
+            background-color: #fee;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Configuración de Horarios de Apertura (US-13)</h1>
+        <p class="subtitle">Configura los días y horarios de apertura de tu local</p>
+        
+        <div id="messages"></div>
+        
+        <div class="horario-grid" id="horariosGrid">
+            <!-- Se llenará dinámicamente con JavaScript -->
+        </div>
+        
+        <button class="btn-save" onclick="guardarTodosLosHorarios()">Guardar Cambios</button>
+    </div>
+
+    <script>
+        const diasSemana = [
+            { id: 0, nombre: 'Lunes' },
+            { id: 1, nombre: 'Martes' },
+            { id: 2, nombre: 'Miércoles' },
+            { id: 3, nombre: 'Jueves' },
+            { id: 4, nombre: 'Viernes' },
+            { id: 5, nombre: 'Sábado' },
+            { id: 6, nombre: 'Domingo' }
+        ];
+        
+        const API_URL = 'http://localhost:8000'; // Cambiar según tu configuración
+        let empresaId = 1; // Cambiar según el usuario logueado
+        let horariosActuales = {};
+        
+        async function cargarHorarios() {
+            try {
+                const response = await fetch(`${API_URL}/horarios/empresa/${empresaId}`);
+                const horarios = await response.json();
+                horariosActuales = {};
+                horarios.forEach(h => {
+                    horariosActuales[h.dia_semana] = h;
+                });
+                renderizarHorarios();
+            } catch (error) {
+                console.error('Error cargando horarios:', error);
+                mostrarError('Error al cargar los horarios');
+            }
+        }
+        
+        function renderizarHorarios() {
+            const grid = document.getElementById('horariosGrid');
+            grid.innerHTML = '';
+            
+            diasSemana.forEach(dia => {
+                const horario = horariosActuales[dia.id];
+                const horaInicio = horario?.hora_inicio || '09:00';
+                const horaFin = horario?.hora_fin || '17:00';
+                const abierto = horario?.abierto !== false;
+                
+                const card = document.createElement('div');
+                card.className = `dia-card ${!abierto ? 'cerrado' : ''}`;
+                card.id = `dia-${dia.id}`;
+                
+                card.innerHTML = `
+                    <h3>${dia.nombre}</h3>
+                    
+                    <div class="toggle-group">
+                        <label>Abierto:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="abierto-${dia.id}" ${abierto ? 'checked' : ''} 
+                                   onchange="toggleDia(${dia.id})">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="horario-input-group ${!abierto ? 'disabled' : ''}">
+                        <label>Hora de Apertura:</label>
+                        <input type="time" id="inicio-${dia.id}" value="${horaInicio}" 
+                               ${!abierto ? 'disabled' : ''} class="hora-input">
+                    </div>
+                    
+                    <div class="horario-input-group ${!abierto ? 'disabled' : ''}">
+                        <label>Hora de Cierre:</label>
+                        <input type="time" id="fin-${dia.id}" value="${horaFin}" 
+                               ${!abierto ? 'disabled' : ''} class="hora-input">
+                    </div>
+                    
+                    <div class="horario-input-group">
+                        <label>Descripción (Opcional):</label>
+                        <input type="text" id="desc-${dia.id}" 
+                               value="${horario?.descripcion || ''}" 
+                               placeholder="Ej: Cerrado por mantenimiento">
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function toggleDia(diaId) {
+            const checkbox = document.getElementById(`abierto-${diaId}`);
+            const abierto = checkbox.checked;
+            
+            // Habilitar/deshabilitar inputs
+            document.getElementById(`inicio-${diaId}`).disabled = !abierto;
+            document.getElementById(`fin-${diaId}`).disabled = !abierto;
+            
+            // Cambiar estilo del card
+            const card = document.getElementById(`dia-${diaId}`);
+            if (abierto) {
+                card.classList.remove('cerrado');
+            } else {
+                card.classList.add('cerrado');
+            }
+        }
+        
+        async function guardarTodosLosHorarios() {
+            const horariosParaGuardar = [];
+            
+            diasSemana.forEach(dia => {
+                const abierto = document.getElementById(`abierto-${dia.id}`).checked;
+                const horaInicio = document.getElementById(`inicio-${dia.id}`).value;
+                const horaFin = document.getElementById(`fin-${dia.id}`).value;
+                const descripcion = document.getElementById(`desc-${dia.id}`).value;
+                
+                horariosParaGuardar.push({
+                    dia_semana: dia.id,
+                    abierto: abierto,
+                    hora_inicio: horaInicio,
+                    hora_fin: horaFin,
+                    descripcion: descripcion,
+                    id_empresa: empresaId
+                });
+            });
+            
+            try {
+                for (const horario of horariosParaGuardar) {
+                    const horarioExistente = horariosActuales[horario.dia_semana];
+                    
+                    if (horarioExistente) {
+                        // Update
+                        await fetch(`${API_URL}/horarios/${horarioExistente.id_horario}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(horario)
+                        });
+                    } else {
+                        // Create
+                        await fetch(`${API_URL}/horarios/`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(horario)
+                        });
+                    }
+                }
+                
+                mostrarExito('Horarios guardados exitosamente');
+                cargarHorarios();
+            } catch (error) {
+                console.error('Error guardando horarios:', error);
+                mostrarError('Error al guardar los horarios');
+            }
+        }
+        
+        function mostrarExito(mensaje) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="success-message" style="display: block;">${mensaje}</div>`;
+            setTimeout(() => {
+                messagesDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        function mostrarError(mensaje) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="error-message" style="display: block;">${mensaje}</div>`;
+        }
+        
+        // Inicializar
+        cargarHorarios();
+    </script>
+</body>
+</html>

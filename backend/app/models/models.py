@@ -11,6 +11,12 @@ class Empresa(Base):
     direccion = Column(String(255))
     telefono = Column(String(20))
     email = Column(String(100))
+    # Campos para US-14: Personalización de Marca
+    logo_url = Column(String(500))
+    color_primario = Column(String(7))  # Código HEX: #RRGGBB
+    color_secundario = Column(String(7))  # Código HEX: #RRGGBB
+    fotos_urls = Column(Text)  # JSON array de URLs
+    activa = Column(Boolean, default=True)
 
     usuarios = relationship("Usuario", back_populates="empresa")
     servicios = relationship("Servicio", back_populates="empresa")
@@ -45,9 +51,12 @@ class Horario(Base):
     __tablename__ = "horarios"
     id_horario = Column(Integer, primary_key=True, autoincrement=True)
     id_empresa = Column(Integer, ForeignKey("empresas.id_empresa"), nullable=False)
-    dia_semana = Column(Integer, nullable=False)
+    dia_semana = Column(Integer, nullable=False)  # 0=Lunes, 1=Martes, ..., 6=Domingo
     hora_inicio = Column(Time, nullable=False)
     hora_fin = Column(Time, nullable=False)
+    # Para US-13: Configuración de horarios
+    abierto = Column(Boolean, default=True)  # False si el local cierra ese día
+    descripcion = Column(String(255))
 
     empresa = relationship("Empresa", back_populates="horarios")
 

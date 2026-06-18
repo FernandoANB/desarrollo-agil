@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloqueo de Fechas - Admin</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .btn-primary {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b7dda;
+        }
+        
+        .btn-danger {
+            background-color: #d32f2f;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .btn-danger:hover {
+            background-color: #b71c1c;
+        }
+        
+        .fechas-lista {
+            margin-top: 30px;
+        }
+        
+        .fecha-item {
+            background: white;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .fecha-item.pasada {
+            opacity: 0.6;
+            border-left-color: #999;
+        }
+        
+        .fecha-info h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        
+        .fecha-info p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .fecha-motivo {
+            color: #2196F3;
+            font-weight: 500;
+        }
+        
+        .success-message,
+        .error-message {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #eef5ee;
+            color: #4CAF50;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        .calendar-mini {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .fechas-bloqueadas-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .fecha-bloque {
+            background: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .fecha-bloque .fecha-numero {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Bloqueo de Fechas Especiales (US-12)</h1>
+        <p class="subtitle">Bloquea fechas específicas como feriados o remodelaciones</p>
+        
+        <div id="messages"></div>
+        
+        <!-- Formulario de Bloqueo de Fecha -->
+        <div class="form-section">
+            <h3>Bloquear una Fecha</h3>
+            
+            <div class="form-group">
+                <label>Selecciona la Fecha:</label>
+                <input type="date" id="fechaBloqueada" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Motivo del Bloqueo:</label>
+                <textarea id="motivoBloqueada" placeholder="Ej: Feriado nacional, Remodelación, Evento privado" required></textarea>
+            </div>
+            
+            <button class="btn-primary" onclick="bloquearFecha()">Bloquear Fecha</button>
+        </div>
+        
+        <!-- Calendario con Fechas Bloqueadas -->
+        <div class="form-section calendar-mini">
+            <h3>Fechas Bloqueadas del Mes Actual</h3>
+            <div class="fechas-bloqueadas-preview" id="fechasPreview">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+        
+        <!-- Lista de Fechas Bloqueadas -->
+        <div class="fechas-lista">
+            <h3>Historial de Fechas Bloqueadas</h3>
+            <div id="fechasList">
+                <p>Cargando fechas...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000'; // Cambiar según tu configuración
+        let empresaId = 1; // Cambiar según el usuario logueado
+        let fechasBloqueadas = [];
+        
+        async function cargarFechasBloqueadas() {
+            try {
+                const response = await fetch(`${API_URL}/fechas_bloqueadas/empresa/${empresaId}`);
+                fechasBloqueadas = await response.json();
+                renderizarFechasBloqueadas();
+                actualizarPreviewCalendario();
+            } catch (error) {
+                console.error('Error cargando fechas:', error);
+                mostrarError('Error al cargar las fechas bloqueadas');
+            }
+        }
+        
+        function renderizarFechasBloqueadas() {
+            const list = document.getElementById('fechasList');
+            
+            if (fechasBloqueadas.length === 0) {
+                list.innerHTML = '<p>No hay fechas bloqueadas</p>';
+                return;
+            }
+            
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            list.innerHTML = fechasBloqueadas.map(fecha => {
+                const fechaObj = new Date(fecha.fecha);
+                const esPasada = fechaObj < hoy;
+                const fechaFormato = fechaObj.toLocaleDateString('es-ES', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                return `
+                    <div class="fecha-item ${esPasada ? 'pasada' : ''}">
+                        <div class="fecha-info">
+                            <h4>${fechaFormato}</h4>
+                            <p class="fecha-motivo">${fecha.motivo || 'Sin especificar'}</p>
+                        </div>
+                        <button class="btn-danger" onclick="desbloquearFecha(${fecha.id_bloqueo})">
+                            Desbloquear
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function actualizarPreviewCalendario() {
+            const preview = document.getElementById('fechasPreview');
+            const hoy = new Date();
+            const mesActual = hoy.getMonth();
+            const anioActual = hoy.getFullYear();
+            
+            const fechasDelMes = fechasBloqueadas.filter(fecha => {
+                const fechaObj = new Date(fecha.fecha);
+                return fechaObj.getMonth() === mesActual && fechaObj.getFullYear() === anioActual;
+            });
+            
+            if (fechasDelMes.length === 0) {
+                preview.innerHTML = '<p>No hay fechas bloqueadas en este mes</p>';
+                return;
+            }
+            
+            preview.innerHTML = fechasDelMes.map(fecha => {
+                const fechaObj = new Date(fecha.fecha);
+                const dia = fechaObj.getDate();
+                const nombreMes = fechaObj.toLocaleDateString('es-ES', { month: 'short' });
+                
+                return `
+                    <div class="fecha-bloque" title="${fecha.motivo}">
+                        <div class="fecha-numero">${dia}</div>
+                        <div>${nombreMes}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function bloquearFecha() {
+            const fecha = document.getElementById('fechaBloqueada').value;
+            const motivo = document.getElementById('motivoBloqueada').value;
+            
+            if (!fecha || !motivo) {
+                mostrarError('Por favor completa todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/fechas_bloqueadas/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id_empresa: empresaId,
+                        fecha: fecha,
+                        motivo: motivo
+                    })
+                });
+                
+                if (response.ok) {
+                    mostrarExito('Fecha bloqueada exitosamente');
+                    document.getElementById('fechaBloqueada').value = '';
+                    document.getElementById('motivoBloqueada').value = '';
+                    cargarFechasBloqueadas();
+                } else {
+                    const error = await response.json();
+                    mostrarError(error.detail || 'Error al bloquear la fecha');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarError('Error al bloquear la fecha');
+            }
+        }
+        
+        async function desbloquearFecha(id) {
+            if (!confirm('¿Estás seguro de que deseas desbloquear esta fecha?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/fechas_bloqueadas/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    mostrarExito('Fecha desbloqueada exitosamente');
+                    cargarFechasBloqueadas();
+                } else {
+                    mostrarError('Error al desbloquear la fecha');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarError('Error al desbloquear la fecha');
+            }
+        }
+        
+        function mostrarExito(mensaje) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="success-message" style="display: block;">${mensaje}</div>`;
+            setTimeout(() => {
+                messagesDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        function mostrarError(mensaje) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="error-message" style="display: block;">${mensaje}</div>`;
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fecha mínima a hoy
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fechaBloqueada').min = hoy;
+            
+            cargarFechasBloqueadas();
+        });
+    </script>
+</body>
+</html>

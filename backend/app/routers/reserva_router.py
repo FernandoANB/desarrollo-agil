@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.schemas.reserva import Reserva, ReservaCreate, ReservaUpdate
-from app.services import reserva_service
+from app.services import reserva_service, fecha_bloqueada_service, horario_service, servicio_service
 from app.database import get_db
 
 # ¡ESTA LÍNEA ES VITAL! Es la que repara tu error 'AttributeError' en main.py
@@ -69,6 +69,31 @@ def get_reserva(id_reserva: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=Reserva)
 def create_reserva(reserva: ReservaCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    # --- VALIDACIONES US-12 y US-13 ---
+    
+    # Obtener el servicio para acceder a la empresa
+    servicio = servicio_service.get_servicio(db, reserva.id_servicio)
+    if not servicio:
+        raise HTTPException(status_code=404, detail="Servicio no encontrado")
+    
+    # Validar que la fecha NO esté bloqueada (US-12)
+    if fecha_bloqueada_service.verificar_fecha_bloqueada(db, servicio.id_empresa, reserva.fecha):
+        raise HTTPException(
+            status_code=400, 
+            detail="Esta fecha está bloqueada. Por favor selecciona otra fecha."
+        )
+    
+    # Validar que el horario sea válido (US-13)
+    # Calcular día de semana: 0=Lunes, 6=Domingo
+    dia_semana = reserva.fecha.weekday()
+    if not horario_service.verificar_horario_disponible(db, servicio.id_empresa, dia_semana, reserva.hora):
+        raise HTTPException(
+            status_code=400, 
+            detail="El horario seleccionado no está disponible. Verifica los horarios de apertura."
+        )
+    
+    # --- CREAR RESERVA ---
+    
     # 1. Guarda la reserva en la base de datos
     nueva_reserva = reserva_service.create_reserva(db, reserva)
     
