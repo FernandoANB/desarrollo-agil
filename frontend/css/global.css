@@ -239,10 +239,13 @@ p.subtitle {
     font-weight: 600;
     border: none;
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Centrado perfecto para todos los botones */
     align-items: center;
+    gap: 10px; /* Separación armónica si el botón tiene un ícono */
     cursor: pointer;
     transition: 0.2s;
+    box-sizing: border-box; /* ESTO EVITA QUE SE VAYA A LA DERECHA */
+    text-decoration: none; /* Asegura que los enlaces no tengan rayita abajo */
 }
 
 .btn-main:active { transform: scale(0.98); }
