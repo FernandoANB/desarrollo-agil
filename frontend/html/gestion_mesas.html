@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ocupación en Vivo - Admin</title>
+    <title>Ocupación de mesas - Admin</title>
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -14,19 +14,18 @@
 <body>
     <div class="app-container">
         <header>
-            <i class="fa-solid fa-bars"></i>
+            <i class="fa-solid fa-arrow-left" onclick="window.location.href='index.html'" style="cursor: pointer;"></i>
             <h2>ADMIN DASHBOARD</h2>
             <i class="fa-solid fa-gear"></i>
         </header>
         
         <main>
             <div class="card" style="background-color: #111; border-color: #111; margin-top: 20px; text-align: center;">
-                <div class="card-header" style="color: #aaa; margin-bottom: 10px;"><span>LIVE OCCUPANCY</span></div>
-                <h1 style="color: #fff; margin: 0; font-size: 3rem;">65% Full</h1>
+                <div class="card-header" style="color: #aaa; margin-bottom: 10px;"><span>Ocupación de Mesas</span></div>
+                <h1 style="color: #fff; margin: 0; font-size: 3rem;">65% de Ocupación</h1>
                 <p style="color: #aaa; margin: 5px 0 0;">Reservas Activas de Hoy</p>
             </div>
 
-            <h3 style="padding: 0 24px; font-family: 'Playfair Display', serif;">Floor Overview</h3>
             
             <div id="reservas-lista">
                 <p style="text-align: center; color: #666;">Cargando reservas...</p>
