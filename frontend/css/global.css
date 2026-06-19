@@ -205,7 +205,7 @@ p.subtitle {
 }
 
 /* Inputs de texto */
-.date-input, input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+.date-input, input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea, select {
     width: 100%;
     padding: 15px 0;
     font-family: 'Inter', sans-serif;
