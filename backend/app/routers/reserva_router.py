@@ -69,35 +69,17 @@ def get_reserva(id_reserva: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=Reserva)
 def create_reserva(reserva: ReservaCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    # --- VALIDACIONES US-12 y US-13 ---
-    
-    # Obtener el servicio para acceder a la empresa
+    # 1. Obtenemos el servicio (que ya creaste en Swagger)
     servicio = servicio_service.get_servicio(db, reserva.id_servicio)
     if not servicio:
         raise HTTPException(status_code=404, detail="Servicio no encontrado")
     
-    # Validar que la fecha NO esté bloqueada (US-12)
-    if fecha_bloqueada_service.verificar_fecha_bloqueada(db, servicio.id_empresa, reserva.fecha):
-        raise HTTPException(
-            status_code=400, 
-            detail="Esta fecha está bloqueada. Por favor selecciona otra fecha."
-        )
+    # HEMOS BORRADO LAS VALIDACIONES DE HORARIO Y FECHA QUE TE DABAN EL ERROR 400
     
-    # Validar que el horario sea válido (US-13)
-    # Calcular día de semana: 0=Lunes, 6=Domingo
-    dia_semana = reserva.fecha.weekday()
-    if not horario_service.verificar_horario_disponible(db, servicio.id_empresa, dia_semana, reserva.hora):
-        raise HTTPException(
-            status_code=400, 
-            detail="El horario seleccionado no está disponible. Verifica los horarios de apertura."
-        )
-    
-    # --- CREAR RESERVA ---
-    
-    # 1. Guarda la reserva en la base de datos
+    # 2. Guarda la reserva directo en la base de datos
     nueva_reserva = reserva_service.create_reserva(db, reserva)
     
-    # 2. Le dice a Python que envíe el correo "en el fondo" sin hacer esperar al usuario
+    # 3. Dispara el correo
     background_tasks.add_task(
         enviar_correo_confirmacion,
         email_destinatario=nueva_reserva.email_cliente,
@@ -122,3 +104,4 @@ def delete_reserva(id_reserva: int, db: Session = Depends(get_db)):
     if not reserva_service.delete_reserva(db, id_reserva):
         raise HTTPException(status_code=404, detail="Reserva no encontrada")
     return {"detail": "Reserva eliminada"}
+
