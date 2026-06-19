@@ -6,13 +6,68 @@
     <title>Inicio - Reserva Refinada</title>
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Estilos para el menú desplegable de administrador */
+        .admin-dropdown {
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .admin-dropdown summary {
+            font-size: 0.85rem;
+            color: #999;
+            text-decoration: underline;
+            cursor: pointer;
+            list-style: none;
+            outline: none;
+            padding: 10px;
+        }
+        
+        .admin-dropdown summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .admin-dropdown summary::after {
+            content: '\f0d7';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-left: 8px;
+        }
+        
+        .admin-dropdown[open] summary::after {
+            content: '\f0d8';
+        }
+        
+        .admin-dropdown-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+        }
+        
+        .admin-dropdown-content a {
+            font-size: 0.85rem;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .admin-dropdown-content a:hover {
+            color: #111;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container" style="justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box;">
         
-        <img src="../../logo/Reserva Refinada.png" alt="Logo Reserva Refinada" style="width: 150px; height: auto; margin-bottom: 20px;">
-        <h1 style="font-size: 3rem; margin-bottom: 10px;">Reserva Refinada</h1>
-        <p class="subtitle" style="margin-bottom: 60px;">Experiencia culinaria de primer nivel</p>
+        <img id="logo-inicio" src="../../logo/Reserva Refinada.png" alt="Logo Reserva Refinada" style="width: 150px; height: auto; margin-bottom: 20px;">
+        <h1 id="nombre-inicio" style="font-size: 3rem; margin-bottom: 10px;">Reserva Refinada</h1>
+        <p id="desc-inicio" class="subtitle" style="margin-bottom: 60px;">Experiencia culinaria de primer nivel</p>
 
         <div style="width: 100%; display: flex; flex-direction: column; gap: 15px; padding: 0 20px; box-sizing: border-box;">
             
@@ -24,31 +79,45 @@
                 VER MIS RESERVAS
             </a>
             
-            <a href="gestion_mesas.html" style="margin-top: 20px; font-size: 0.85rem; color: #999; text-decoration: underline;">
-                Acceso Administrador (Demo)
-            </a>
-        
-            <a href="gestion_servicios.html" style="margin-top: 10px; font-size: 0.85rem; color: #999; text-decoration: underline;">
-                Gestión de Servicios
-            </a>
-
-            <a href="gestion_mesas.html" style="margin-top: 10px; font-size: 0.85rem; color: #999; text-decoration: underline;">
-                Gestión de Mesas
-            </a>
-
-            <a href="gestion_marca.html" style="margin-top: 10px; font-size: 0.85rem; color: #999; text-decoration: underline;">
-                Gestión de Marca
-            </a>
-
-            <a href="gestion_horarios.html" style="margin-top: 10px; font-size: 0.85rem; color: #999; text-decoration: underline;">
-                Gestión de Horarios
-            </a>
-
-            <a href="gestion_fechas_bloqueadas.html" style="margin-top: 10px; font-size: 0.85rem; color: #999; text-decoration: underline;">
-                Gestión de Fechas Bloqueadas
-            </a>
+            <details class="admin-dropdown">
+                <summary>Acceso Administrador (Demo)</summary>
+                <div class="admin-dropdown-content">
+                    <a href="gestion_servicios.html">Gestión de Servicios</a>
+                    <a href="gestion_mesas.html">Gestión de Mesas</a>
+                    <a href="gestion_marca.html">Gestión de Marca</a>
+                    <a href="gestion_horarios.html">Gestión de Horarios</a>
+                    <a href="gestion_fechas_bloqueadas.html">Gestión de Fechas Bloqueadas</a>
+                </div>
+            </details>
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Intenta obtener la configuración guardada localmente
+            const configGuardada = localStorage.getItem('marcaConfig');
+            
+            if (configGuardada) {
+                const empresa = JSON.parse(configGuardada);
+                
+                // Actualiza el logo si existe una ruta guardada
+                if (empresa.logo_url) {
+                    document.getElementById('logo-inicio').src = empresa.logo_url;
+                }
+                
+                // Actualiza el nombre del restaurante en la vista y en la pestaña
+                if (empresa.nombre) {
+                    document.getElementById('nombre-inicio').textContent = empresa.nombre;
+                    document.title = `Inicio - ${empresa.nombre}`;
+                }
+                
+                // Actualiza la descripción secundaria
+                if (empresa.descripcion) {
+                    document.getElementById('desc-inicio').textContent = empresa.descripcion;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

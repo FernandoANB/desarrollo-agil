@@ -335,42 +335,38 @@
         </div>
     </div>
 
-    <script>
-        const API_URL = 'http://localhost:8000';
-        let empresaId = 1; // Cambiar según el usuario logueado
-        let empresaActual = null;
+<script>
+        // Datos por defecto por si es la primera vez que se abre la demo
+        let empresaActual = JSON.parse(localStorage.getItem('marcaConfig')) || {
+            nombre: 'Reserva Refinada',
+            descripcion: 'Experiencia culinaria de primer nivel',
+            logo_url: '../../logo/Reserva Refinada.png',
+            color_primario: '#2196F3',
+            color_secundario: '#1976D2',
+            fotos_urls: ''
+        };
         
-        async function cargarConfiguracionMarca() {
-            try {
-                const response = await fetch(`${API_URL}/empresas/${empresaId}`);
-                empresaActual = await response.json();
-                
-                // Llenar formulario
-                document.getElementById('nombre').value = empresaActual.nombre || '';
-                document.getElementById('descripcion').value = empresaActual.descripcion || '';
-                document.getElementById('logoUrl').value = empresaActual.logo_url || '';
-                document.getElementById('colorPrimario').value = empresaActual.color_primario || '#2196F3';
-                document.getElementById('colorPrimarioColor').value = empresaActual.color_primario || '#2196F3';
-                document.getElementById('colorSecundario').value = empresaActual.color_secundario || '#1976D2';
-                document.getElementById('colorSecundarioColor').value = empresaActual.color_secundario || '#1976D2';
-                
-                // Parsar URLs de fotos
-                let fotosUrls = [];
-                if (empresaActual.fotos_urls) {
-                    try {
-                        fotosUrls = JSON.parse(empresaActual.fotos_urls);
-                    } catch {
-                        fotosUrls = empresaActual.fotos_urls.split(',').map(f => f.trim());
-                    }
+        function cargarConfiguracionMarca() {
+            // Llenar formulario con los datos guardados en localStorage
+            document.getElementById('nombre').value = empresaActual.nombre || '';
+            document.getElementById('descripcion').value = empresaActual.descripcion || '';
+            document.getElementById('logoUrl').value = empresaActual.logo_url || '';
+            document.getElementById('colorPrimario').value = empresaActual.color_primario || '#2196F3';
+            document.getElementById('colorPrimarioColor').value = empresaActual.color_primario || '#2196F3';
+            document.getElementById('colorSecundario').value = empresaActual.color_secundario || '#1976D2';
+            document.getElementById('colorSecundarioColor').value = empresaActual.color_secundario || '#1976D2';
+            
+            let fotosUrls = [];
+            if (empresaActual.fotos_urls) {
+                try {
+                    fotosUrls = JSON.parse(empresaActual.fotos_urls);
+                } catch {
+                    fotosUrls = empresaActual.fotos_urls.split(',').map(f => f.trim());
                 }
-                document.getElementById('fotosUrls').value = fotosUrls.join(', ');
-                
-                // Actualizar preview
-                actualizarPreview();
-            } catch (error) {
-                console.error('Error cargando configuración:', error);
-                mostrarError('Error al cargar la configuración de marca');
             }
+            document.getElementById('fotosUrls').value = Array.isArray(fotosUrls) ? fotosUrls.join(', ') : fotosUrls;
+            
+            actualizarPreview();
         }
         
         function sincronizarColor(inputId, colorPickerId) {
@@ -388,17 +384,14 @@
             const colorSecundario = document.getElementById('colorSecundario').value || '#1976D2';
             const fotosString = document.getElementById('fotosUrls').value;
             
-            // Actualizar header
             const previewHeader = document.getElementById('previewHeader');
             previewHeader.style.setProperty('--preview-primary', colorPrimario);
             previewHeader.style.setProperty('--preview-secondary', colorSecundario);
             previewHeader.style.background = `linear-gradient(135deg, ${colorPrimario}, ${colorSecundario})`;
             
-            // Actualizar título
             document.getElementById('previewTitle').textContent = nombre;
             document.getElementById('previewDesc').textContent = descripcion;
             
-            // Actualizar logo
             const previewLogo = document.getElementById('previewLogo');
             if (logo) {
                 previewLogo.classList.remove('empty');
@@ -408,7 +401,6 @@
                 previewLogo.innerHTML = '<span>Logo</span>';
             }
             
-            // Actualizar fotos
             const fotos = fotosString.split(',').map(f => f.trim()).filter(f => f);
             const previewFotos = document.getElementById('previewFotos');
             previewFotos.innerHTML = '';
@@ -429,7 +421,7 @@
             }
         }
         
-        async function guardarMarca() {
+        function guardarMarca() {
             const nombre = document.getElementById('nombre').value;
             const descripcion = document.getElementById('descripcion').value;
             const logoUrl = document.getElementById('logoUrl').value;
@@ -437,49 +429,34 @@
             const colorSecundario = document.getElementById('colorSecundario').value;
             const fotosString = document.getElementById('fotosUrls').value;
             
-            // Validar colores HEX
             if (!validarColorHex(colorPrimario) || !validarColorHex(colorSecundario)) {
                 mostrarError('Los colores deben estar en formato HEX válido (ej: #2196F3)');
                 return;
             }
             
-            // Parsear fotos
             const fotos = fotosString.split(',').map(f => f.trim()).filter(f => f);
             
-            try {
-                const params = new URLSearchParams();
-                if (logoUrl) params.append('logo_url', logoUrl);
-                if (colorPrimario) params.append('color_primario', colorPrimario);
-                if (colorSecundario) params.append('color_secundario', colorSecundario);
-                if (fotos.length > 0) params.append('fotos_urls', JSON.stringify(fotos));
-                
-                const response = await fetch(`${API_URL}/empresas/${empresaId}/marca?${params.toString()}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    // Actualizar empresa con los nuevos datos
-                    const responseUpdate = await fetch(`${API_URL}/empresas/${empresaId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            nombre: nombre,
-                            descripcion: descripcion
-                        })
-                    });
-                    
-                    if (responseUpdate.ok) {
-                        mostrarExito('Configuración de marca guardada exitosamente');
-                        cargarConfiguracionMarca();
-                    }
-                } else {
-                    const error = await response.json();
-                    mostrarError(error.detail || 'Error al guardar la marca');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarError('Error al guardar la configuración de marca');
+            // Crear el objeto con los datos a guardar
+            const configToSave = {
+                nombre: nombre,
+                descripcion: descripcion,
+                logo_url: logoUrl,
+                color_primario: colorPrimario,
+                color_secundario: colorSecundario,
+                fotos_urls: JSON.stringify(fotos)
+            };
+            
+            // Guardar localmente en el navegador
+            localStorage.setItem('marcaConfig', JSON.stringify(configToSave));
+            empresaActual = configToSave;
+            
+            mostrarExito('Configuración guardada en modo demo (Local)');
+            cargarConfiguracionMarca();
+            
+            // Ocultar la barra roja de error si estaba visible
+            const messagesDiv = document.getElementById('messages');
+            if(messagesDiv.querySelector('.error-message')) {
+                messagesDiv.innerHTML = '';
             }
         }
         
@@ -500,11 +477,9 @@
             messagesDiv.innerHTML = `<div class="error-message" style="display: block;">${mensaje}</div>`;
         }
         
-        // Event listeners para actualización en vivo
         document.addEventListener('DOMContentLoaded', function() {
             cargarConfiguracionMarca();
             
-            // Actualizar preview mientras escribo
             document.getElementById('nombre').addEventListener('input', actualizarPreview);
             document.getElementById('descripcion').addEventListener('input', actualizarPreview);
             document.getElementById('logoUrl').addEventListener('input', actualizarPreview);
